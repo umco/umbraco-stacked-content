@@ -1,7 +1,7 @@
 # Stacked Content
 
 An Umbraco property editor for creating stacked content blocks.
-
+ 
 ## Dev Team
 
 * [Matt Brailsford](https://github.com/mattbrailsford)
