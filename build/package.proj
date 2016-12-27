@@ -33,7 +33,7 @@
 		<NuGetPackageName>Stacked Content for Umbraco</NuGetPackageName>
 		<Copyright>Copyright &#169; 2016 Umco, Our Umbraco and other contributors</Copyright>
 		<Owners>Matt Brailsford, Lee Kelleher</Owners>
-		<IconUrl>https://our.umbraco.org/media/wiki/145710/635623752021571595_ncpng.png</IconUrl>
+		<IconUrl>https://raw.githubusercontent.com/umco/umbraco-stacked-content/master/docs/img/logo.png</IconUrl>
 		<Tags>umbraco umco</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
