@@ -64,6 +64,10 @@
             });
         }
 
+        var previewEnabled = function () {
+            return $scope.model.config.disablePreview !== "1";
+        }
+
         // Initialize
         innerContentService.getScaffolds($scope.model.config.contentTypes).then(function (scaffolds) {
 
@@ -82,11 +86,13 @@
                 callback: function (data) {
                     innerContentService.populateName(data.model, data.idx, $scope.model.config.contentTypes);
 
-                    scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
-                        if (markup) {
-                            $scope.markup[data.model.key] = markup;
-                        }
-                    });
+                    if (previewEnabled()) {
+                        scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
+                            if (markup) {
+                                $scope.markup[data.model.key] = markup;
+                            }
+                        });
+                    }
 
                     if (data.action === "add") {
                         $scope.model.value.splice(data.idx, 0, data.model);
@@ -115,7 +121,9 @@
                     });
 
                     // Try loading previews
-                    loadPreviews();
+                    if (previewEnabled()) {
+                        loadPreviews();
+                    }
                 });
 
             } else if ($scope.model.config.singleItemMode === "1") {
@@ -127,7 +135,9 @@
                 $scope.inited = true;
 
                 // Try loading previews
-                loadPreviews();
+                if (previewEnabled()) {
+                    loadPreviews();
+                }
 
             } else {
 

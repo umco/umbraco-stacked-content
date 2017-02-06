@@ -28,7 +28,8 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
             {
                 {"contentTypes", ""},
                 {"maxItems", 0},
-                {"singleItemMode", "0"}
+                {"singleItemMode", "0"},
+                {"disablePreview", "0"}
             };
         }
 
@@ -52,6 +53,9 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
 
             [PreValueField("hideLabel", "Hide Label", "boolean", Description = "Set whether to hide the editor label and have the list take up the full width of the editor window.")]
             public string HideLabel { get; set; }
+
+            [PreValueField("disablePreview", "Disable Preview", "boolean", Description = "Set whether to disable the preview of the items in the stack.")]
+            public string DisablePreview { get; set; }
         }
 
         #endregion
