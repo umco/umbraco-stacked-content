@@ -11,7 +11,6 @@ namespace Our.Umbraco.StackedContent.Converters
 {
     public class StackedContentValueConverter : InnerContentValueConverter
     {
-
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
             return propertyType.PropertyEditorAlias.InvariantEquals(StackedContentPropertyEditor.PropertyEditorAlias);
@@ -26,7 +25,7 @@ namespace Our.Umbraco.StackedContent.Converters
                     var rawValue = JsonConvert.DeserializeObject<JArray>(source.ToString());
 
                     return ConvertInnerContentDataToSource(rawValue, null, 1, preview);
-                    
+
                 }
 
             }

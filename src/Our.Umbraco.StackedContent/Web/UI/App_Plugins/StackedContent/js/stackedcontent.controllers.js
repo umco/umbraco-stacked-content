@@ -2,7 +2,6 @@
 
     "$scope",
     "editorState",
-
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
 
@@ -13,7 +12,7 @@
         $scope.prompts = {};
         $scope.model.value = $scope.model.value || [];
 
-        $scope.canAdd = function() {
+        $scope.canAdd = function () {
             return (!$scope.model.config.maxItems || $scope.model.config.maxItems == 0 || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode != "1";
         }
 
@@ -23,7 +22,7 @@
 
         $scope.addContent = function (evt, idx) {
             $scope.overlayConfig.event = evt;
-            $scope.overlayConfig.data = { model: null, idx: idx, action:"add" };
+            $scope.overlayConfig.data = { model: null, idx: idx, action: "add" };
             $scope.overlayConfig.show = true;
         }
 
@@ -33,7 +32,7 @@
             $scope.overlayConfig.show = true;
         }
 
-        $scope.deleteContent = function(evt, idx) {
+        $scope.deleteContent = function (evt, idx) {
             $scope.model.value.splice(idx, 1);
         }
 
@@ -41,14 +40,14 @@
             axis: 'y',
             cursor: "move",
             handle: ".stack__preview-wrapper",
-            helper: function() {
+            helper: function () {
                 return $('<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>');
             },
             cursorAt: {
-              top: 0  
+                top: 0
             },
-            update: function(e, ui) {
-                _.each($scope.model.value, function(itm, idx) {
+            update: function (e, ui) {
+                _.each($scope.model.value, function (itm, idx) {
                     innerContentService.populateName(itm, idx, $scope.model.config.contentTypes);
                 });
             }
@@ -66,7 +65,7 @@
         }
 
         // Initialize
-        innerContentService.getScaffolds($scope.model.config.contentTypes).then(function(scaffolds) {
+        innerContentService.getScaffolds($scope.model.config.contentTypes).then(function (scaffolds) {
 
             // Stash scaffolds
             $scope.scaffolds = scaffolds;
@@ -131,7 +130,7 @@
                 loadPreviews();
 
             } else {
-                
+
                 // Model is ready so set inited
                 $scope.inited = true;
 

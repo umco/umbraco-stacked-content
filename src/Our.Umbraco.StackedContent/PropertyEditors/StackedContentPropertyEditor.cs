@@ -46,7 +46,7 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
 
             [PreValueField("maxItems", "Max Items", "number", Description = "Set the maximum number of items allowed in this stack.")]
             public string MaxItems { get; set; }
-            
+
             [PreValueField("singleItemMode", "Single Item Mode", "boolean", Description = "Set whether to work in single item mode (only the first defined Doc Type will be used).")]
             public string SingleItemMode { get; set; }
 
@@ -128,6 +128,5 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
         }
 
         #endregion
-
     }
 }

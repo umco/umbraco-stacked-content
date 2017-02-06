@@ -35,6 +35,5 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
 
             return sw.ToString();
         }
-
     }
 }
