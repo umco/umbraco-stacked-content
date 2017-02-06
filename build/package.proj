@@ -31,7 +31,7 @@
 	<PropertyGroup>
 		<PackageId>Our.Umbraco.StackedContent</PackageId>
 		<NuGetPackageName>Stacked Content for Umbraco</NuGetPackageName>
-		<Copyright>Copyright &#169; 2016 Umco, Our Umbraco and other contributors</Copyright>
+		<Copyright>Copyright &#169; 2016 UMCO, Our Umbraco and other contributors</Copyright>
 		<Owners>Matt Brailsford, Lee Kelleher</Owners>
 		<IconUrl>https://raw.githubusercontent.com/umco/umbraco-stacked-content/master/docs/img/logo.png</IconUrl>
 		<Tags>umbraco umco</Tags>
