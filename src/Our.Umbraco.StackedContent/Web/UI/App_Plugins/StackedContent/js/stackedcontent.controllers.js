@@ -94,6 +94,10 @@
                         });
                     }
 
+                    if (!($scope.model.value instanceof Array)) {
+                        $scope.model.value = [];
+                    }
+
                     if (data.action === "add") {
                         $scope.model.value.splice(data.idx, 0, data.model);
                     } else if (data.action === "edit") {
