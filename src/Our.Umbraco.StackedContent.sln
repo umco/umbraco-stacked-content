@@ -1,9 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.StackedContent", "Our.Umbraco.StackedContent\Our.Umbraco.StackedContent.csproj", "{E0F6B57D-F549-4EF0-B5A7-5C1A9B49FD80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{52A49C4D-441F-4D54-A23F-444AF47DB250}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\umbraco-nested-content\CONTRIBUTING.md = ..\..\umbraco-nested-content\CONTRIBUTING.md
+		..\..\umbraco-nested-content\LICENSE.md = ..\..\umbraco-nested-content\LICENSE.md
+		..\..\umbraco-nested-content\README.md = ..\..\umbraco-nested-content\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{95F00400-1FCA-4D98-9643-ACBC2203C1D0}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\umbraco-nested-content\appveyor.yml = ..\..\umbraco-nested-content\appveyor.yml
+		..\..\umbraco-nested-content\build-appveyor.cmd = ..\..\umbraco-nested-content\build-appveyor.cmd
+		..\..\umbraco-nested-content\build.cmd = ..\..\umbraco-nested-content\build.cmd
+		..\..\umbraco-nested-content\build\install.ps1 = ..\..\umbraco-nested-content\build\install.ps1
+		..\..\umbraco-nested-content\build\package.nuspec = ..\..\umbraco-nested-content\build\package.nuspec
+		..\..\umbraco-nested-content\build\package.proj = ..\..\umbraco-nested-content\build\package.proj
+		..\..\umbraco-nested-content\build\package.xml = ..\..\umbraco-nested-content\build\package.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{95F00400-1FCA-4D98-9643-ACBC2203C1D0} = {52A49C4D-441F-4D54-A23F-444AF47DB250}
 	EndGlobalSection
 EndGlobal
