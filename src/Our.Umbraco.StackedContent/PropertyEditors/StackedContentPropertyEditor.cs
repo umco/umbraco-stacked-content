@@ -9,7 +9,7 @@ using Umbraco.Core.Services;
 
 namespace Our.Umbraco.StackedContent.PropertyEditors
 {
-    [PropertyEditor(PropertyEditorAlias, "Stacked Content", "/App_Plugins/StackedContent/views/stackedcontent.html", ValueType = "JSON")]
+    [PropertyEditor(PropertyEditorAlias, "Stacked Content", "/App_Plugins/StackedContent/views/stackedcontent.html", Group = "rich content", Icon = "icon-umb-contour", ValueType = "JSON")]
     public class StackedContentPropertyEditor : PropertyEditor
     {
         public const string PropertyEditorAlias = "Our.Umbraco.StackedContent";
