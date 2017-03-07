@@ -3,6 +3,10 @@
     position: relative;
 }
 
+.stacked-content .umb-load-indicator {
+    margin-top: 10px;
+}
+
 .stack__wrapper
 {
     margin-right: 12px;
