@@ -68,72 +68,69 @@
             return $scope.model.config.disablePreview !== "1";
         }
 
-        // Initialize
-        innerContentService.getScaffolds($scope.model.config.contentTypes).then(function (scaffolds) {
 
-            // Stash scaffolds
-            $scope.scaffolds = scaffolds;
+        // Set overlay config
+        $scope.overlayConfig = {
+            propertyAlias: $scope.model.alias,
+            contentTypes: $scope.model.config.contentTypes,
+            show: false,
+            data: {
+                idx: 0,
+                model: null
+            },
+            callback: function (data) {
+                innerContentService.populateName(data.model, data.idx, $scope.model.config.contentTypes);
 
-            // Set overlay config
-            $scope.overlayConfig = {
-                propertyAlias: $scope.model.alias,
-                scaffolds: scaffolds,
-                show: false,
-                data: {
-                    idx: 0,
-                    model: null
-                },
-                callback: function (data) {
-                    innerContentService.populateName(data.model, data.idx, $scope.model.config.contentTypes);
-
-                    if (previewEnabled()) {
-                        scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
-                            if (markup) {
-                                $scope.markup[data.model.key] = markup;
-                            }
-                        });
-                    }
-
-                    if (!($scope.model.value instanceof Array)) {
-                        $scope.model.value = [];
-                    }
-
-                    if (data.action === "add") {
-                        $scope.model.value.splice(data.idx, 0, data.model);
-                    } else if (data.action === "edit") {
-                        $scope.model.value[data.idx] = data.model;
-                    }
-                }
-            }
-
-            // Initialize value
-            if ($scope.model.value.length > 0) {
-
-                // Model is ready so set inited
-                $scope.inited = true;
-
-                // Sync icons incase it's changes on the doctype
-                var aliases = _.uniq($scope.model.value.map(function (itm) {
-                    return itm.icContentTypeAlias;
-                }));
-
-                innerContentService.getContentTypeIcons(aliases).then(function (data) {
-                    _.each($scope.model.value, function (itm) {
-                        if (data.hasOwnProperty(itm.icContentTypeAlias)) {
-                            itm.icon = data[itm.icContentTypeAlias];
+                if (previewEnabled()) {
+                    scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
+                        if (markup) {
+                            $scope.markup[data.model.key] = markup;
                         }
                     });
+                }
 
-                    // Try loading previews
-                    if (previewEnabled()) {
-                        loadPreviews();
+                if (!($scope.model.value instanceof Array)) {
+                    $scope.model.value = [];
+                }
+
+                if (data.action === "add") {
+                    $scope.model.value.splice(data.idx, 0, data.model);
+                } else if (data.action === "edit") {
+                    $scope.model.value[data.idx] = data.model;
+                }
+            }
+        }
+
+        // Initialize value
+        if ($scope.model.value.length > 0) {
+
+            // Model is ready so set inited
+            $scope.inited = true;
+
+            // Sync icons incase it's changes on the doctype
+            var aliases = _.uniq($scope.model.value.map(function (itm) {
+                return itm.icContentTypeAlias;
+            }));
+
+            innerContentService.getContentTypeIcons(aliases).then(function (data) {
+                _.each($scope.model.value, function (itm) {
+                    if (data.hasOwnProperty(itm.icContentTypeAlias)) {
+                        itm.icon = data[itm.icContentTypeAlias];
                     }
                 });
 
-            } else if ($scope.model.config.singleItemMode === "1") {
+                // Try loading previews
+                if (previewEnabled()) {
+                    loadPreviews();
+                }
+            });
 
-                // Initialise single item mode model
-                $scope.model.value = [innerContentService.createDefaultDbModel($scope.scaffolds[0])];
+        } else if ($scope.model.config.singleItemMode === "1") {
+
+            // Initialise single item mode model
+            innerContentService.createDefaultDbModel($scope.model.config.contentTypes[0]).then(function(v) {
+
+                $scope.model.value = [v];
 
                 // Model is ready so set inited
                 $scope.inited = true;
@@ -143,14 +140,15 @@
                     loadPreviews();
                 }
 
-            } else {
+            });
+                
 
-                // Model is ready so set inited
-                $scope.inited = true;
+        } else {
 
-            }
+            // Model is ready so set inited
+            $scope.inited = true;
 
-        });
+        }
     }
 
 ]);
