@@ -12,7 +12,7 @@ if (!$contentFolder)
 	$projectPath = Join-Path $projDirectory -ChildPath "App_Plugins"
 	$projectPathExists = Test-Path $projectPath
 
-	if ($projectPathExists) {	
+	if ($projectPathExists) {
 		Write-Host "Updating Stacked Content App_Plugin files using PS as they have been excluded from the project"
 		Copy-Item $newPackageFiles $projectPath -Recurse -Force
 	}

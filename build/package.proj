@@ -19,7 +19,7 @@
 		<ProjectName>Our.Umbraco.StackedContent</ProjectName>
 		<PackageName>Stacked Content</PackageName>
 		<MinUmbracoVersion>7.4.0</MinUmbracoVersion>
-		<Readme>Stacked Content is a stacked content editing property editor for Umbraco 7.4+</Readme>
+		<Readme>Stacked Content is an Umbraco property-editor for creating stacked content blocks.</Readme>
 		<AuthorName>Matt Brailsford, Lee Kelleher</AuthorName>
 		<AuthorUrl>https://github.com/umco/umbraco-stacked-content/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>MIT license</PackageLicenseName>
@@ -31,7 +31,7 @@
 	<PropertyGroup>
 		<PackageId>Our.Umbraco.StackedContent</PackageId>
 		<NuGetPackageName>Stacked Content for Umbraco</NuGetPackageName>
-		<Copyright>Copyright &#169; 2016 Umco, Our Umbraco and other contributors</Copyright>
+		<Copyright>Copyright &#169; 2016 UMCO, Our Umbraco and other contributors</Copyright>
 		<Owners>Matt Brailsford, Lee Kelleher</Owners>
 		<IconUrl>https://raw.githubusercontent.com/umco/umbraco-stacked-content/master/docs/img/logo.png</IconUrl>
 		<Tags>umbraco umco</Tags>
@@ -193,7 +193,7 @@
 			OutputDirectory="$(ArtifactsDir)"
 			Files="@(PackageFiles)" />
 
-		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\src\packages\NuGet.CommandLine.3.4.4-rtm-final\tools\NuGet.exe"
+		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(MSBuildProjectDirectory)\tools\NuGet\NuGet.exe"
 			ManifestFile="$(BuildNuGetDir)\package.nuspec"
 			BasePath="$(BuildNuGetDir)"
 			Version="$(ProductVersion)"

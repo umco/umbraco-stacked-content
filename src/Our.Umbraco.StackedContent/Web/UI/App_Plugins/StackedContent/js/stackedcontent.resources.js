@@ -6,7 +6,7 @@
                     $http({
                         url: "/umbraco/backoffice/StackedContent/StackedContentApi/GetPreviewMarkup",
                         method: "POST",
-                        params: { parentId : parentId },
+                        params: { parentId: parentId },
                         data: data
                     }),
                     'Failed to retrieve preview markup'
