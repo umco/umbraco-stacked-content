@@ -128,7 +128,7 @@
         } else if ($scope.model.config.singleItemMode === "1") {
 
             // Initialise single item mode model
-            innerContentService.createDefaultDbModel($scope.model.config.contentTypes[0]).then(function(v) {
+            innerContentService.createDefaultDbModel($scope.model.config.contentTypes[0]).then(function (v) {
 
                 $scope.model.value = [v];
 
@@ -141,7 +141,6 @@
                 }
 
             });
-                
 
         } else {
 

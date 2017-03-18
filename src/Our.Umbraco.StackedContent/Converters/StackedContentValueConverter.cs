@@ -29,9 +29,7 @@ namespace Our.Umbraco.StackedContent.Converters
                     var rawValue = JsonConvert.DeserializeObject<JArray>(source.ToString());
 
                     return ConvertInnerContentDataToSource(rawValue, null, 1, preview);
-
                 }
-
             }
             catch (Exception e)
             {
