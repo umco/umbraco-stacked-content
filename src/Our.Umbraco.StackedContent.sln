@@ -7,20 +7,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.StackedContent"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{52A49C4D-441F-4D54-A23F-444AF47DB250}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\umbraco-nested-content\CONTRIBUTING.md = ..\..\umbraco-nested-content\CONTRIBUTING.md
-		..\..\umbraco-nested-content\LICENSE.md = ..\..\umbraco-nested-content\LICENSE.md
-		..\..\umbraco-nested-content\README.md = ..\..\umbraco-nested-content\README.md
+		..\..\umbraco-stacked-content\CONTRIBUTING.md = ..\..\umbraco-stacked-content\CONTRIBUTING.md
+		..\..\umbraco-stacked-content\LICENSE.md = ..\..\umbraco-stacked-content\LICENSE.md
+		..\..\umbraco-stacked-content\README.md = ..\..\umbraco-stacked-content\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{95F00400-1FCA-4D98-9643-ACBC2203C1D0}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\umbraco-nested-content\appveyor.yml = ..\..\umbraco-nested-content\appveyor.yml
-		..\..\umbraco-nested-content\build-appveyor.cmd = ..\..\umbraco-nested-content\build-appveyor.cmd
-		..\..\umbraco-nested-content\build.cmd = ..\..\umbraco-nested-content\build.cmd
-		..\..\umbraco-nested-content\build\install.ps1 = ..\..\umbraco-nested-content\build\install.ps1
-		..\..\umbraco-nested-content\build\package.nuspec = ..\..\umbraco-nested-content\build\package.nuspec
-		..\..\umbraco-nested-content\build\package.proj = ..\..\umbraco-nested-content\build\package.proj
-		..\..\umbraco-nested-content\build\package.xml = ..\..\umbraco-nested-content\build\package.xml
+		..\..\umbraco-stacked-content\appveyor.yml = ..\..\umbraco-stacked-content\appveyor.yml
+		..\..\umbraco-stacked-content\build-appveyor.cmd = ..\..\umbraco-stacked-content\build-appveyor.cmd
+		..\..\umbraco-stacked-content\build.cmd = ..\..\umbraco-stacked-content\build.cmd
+		..\..\umbraco-stacked-content\build\install.ps1 = ..\..\umbraco-stacked-content\build\install.ps1
+		..\..\umbraco-stacked-content\build\package.nuspec = ..\..\umbraco-stacked-content\build\package.nuspec
+		..\..\umbraco-stacked-content\build\package.proj = ..\..\umbraco-stacked-content\build\package.proj
+		..\..\umbraco-stacked-content\build\package.xml = ..\..\umbraco-stacked-content\build\package.xml
 	EndProjectSection
 EndProject
 Global
