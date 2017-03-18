@@ -19,7 +19,7 @@
 		<ProjectName>Our.Umbraco.StackedContent</ProjectName>
 		<PackageName>Stacked Content</PackageName>
 		<MinUmbracoVersion>7.4.0</MinUmbracoVersion>
-		<Readme>Stacked Content is a stacked content editing property editor for Umbraco 7.4+</Readme>
+		<Readme>Stacked Content is an Umbraco property-editor for creating stacked content blocks.</Readme>
 		<AuthorName>Matt Brailsford, Lee Kelleher</AuthorName>
 		<AuthorUrl>https://github.com/umco/umbraco-stacked-content/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>MIT license</PackageLicenseName>
