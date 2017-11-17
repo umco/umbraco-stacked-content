@@ -44,7 +44,9 @@ To clone it locally click the "Clone in Windows" button above or run the followi
 
 ## Known Issues
 
-* _[TBC]_
+Please be aware that not all property-editors will work within Stacked Content. The following Umbraco core property-editors are known to have compatibility issues:
+
+* Upload
 
 ---
 
