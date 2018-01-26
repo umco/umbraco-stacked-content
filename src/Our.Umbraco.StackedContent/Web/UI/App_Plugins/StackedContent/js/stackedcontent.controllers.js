@@ -2,10 +2,11 @@
 
     "$scope",
     "editorState",
+    "notificationsService",
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
 
-    function ($scope, editorState, innerContentService, scResources) {
+    function ($scope, editorState, notificationsService, innerContentService, scResources) {
 
         $scope.inited = false;
         $scope.markup = {};
@@ -18,6 +19,12 @@
 
         $scope.canDelete = function () {
             return $scope.model.config.singleItemMode !== "1";
+        }
+
+        $scope.canPaste = function () {
+            var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
+            if (stackedContentItem && validateModel(stackedContentItem)) return true;
+            return false;
         }
 
         $scope.addContent = function (evt, idx) {
@@ -34,6 +41,36 @@
 
         $scope.deleteContent = function (evt, idx) {
             $scope.model.value.splice(idx, 1);
+        }
+
+        $scope.copyToLocalStorage = function (evt, idx) {
+            var stackedContentItem = Object.assign({}, $scope.model.value[idx]);
+            stackedContentItem.key = "";
+            stackedContentItem.$$hashKey = "";
+
+            if (validateModel(stackedContentItem)) {
+                window.localStorage.setItem("StackedContentCopy", JSON.stringify(stackedContentItem));
+                notificationsService.success("Stacked Content", "Copied to clipboard.");
+                return;
+            } else {
+                notificationsService.error("Stacked Content", "Sorry, something went wrong.");
+            }
+        }
+
+        $scope.pasteFromLocalStorage = function (evt, idx) {
+            var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
+            if (!stackedContentItem) {
+                notificationsService.error("Stacked Content", "You need to copy content first.");
+                return;
+            }
+            if (validateModel(stackedContentItem)) {
+                $scope.overlayConfig.event = evt;
+                $scope.overlayConfig.data = { model: stackedContentItem, idx: idx, action: "add" };
+                $scope.overlayConfig.show = true;
+                return;
+            } else {
+                notificationsService.error("Stacked Content", "Sorry, this content is not allowed here.");
+            }
         }
 
         $scope.sortableOptions = {
@@ -68,6 +105,16 @@
             return $scope.model.config.disablePreview !== "1";
         }
 
+        var validateModel = function (model) {
+            try {
+                console.log($scope.model.config.contentTypes);
+                if (!model || !model.icContentTypeAlias) return false;
+                if (!$scope.model.config.contentTypes.filter(x => x.icContentTypeAlias === model.icContentTypeAlias).length) return false;
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
 
         // Set overlay config
         $scope.overlayConfig = {
