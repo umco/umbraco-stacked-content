@@ -21,6 +21,17 @@
             return $scope.model.config.singleItemMode !== "1";
         }
 
+        $scope.canCopy = function () {
+            var test = "test";
+            try {
+                window.localStorage.setItem(test, test);
+                window.localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+		}
+
         $scope.canPaste = function () {
             var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
             if (stackedContentItem && validateModel(stackedContentItem)) return true;
@@ -107,7 +118,6 @@
 
         var validateModel = function (model) {
             try {
-                console.log($scope.model.config.contentTypes);
                 if (!model || !model.icContentTypeAlias) return false;
                 if (!$scope.model.config.contentTypes.filter(x => x.icContentTypeAlias === model.icContentTypeAlias).length) return false;
                 return true;
