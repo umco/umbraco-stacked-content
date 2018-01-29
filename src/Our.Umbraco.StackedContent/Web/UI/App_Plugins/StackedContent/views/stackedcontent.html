@@ -27,13 +27,13 @@
                         </a>
                         <div class="stack__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
                             <div class="no-overflow">
+                                <a ng-click="copyToLocalStorage($event, $index)" ng-if="canCopy()" class="stack__button" title="Copy"><i class="icon icon-documents"></i></a>
                                 <umb-confirm-action ng-if="prompts[itm.key]"
                                                     direction="left"
                                                     on-confirm="deleteContent($event, $index)"
                                                     on-cancel="prompts[itm.key] = false">
                                 </umb-confirm-action>
                                 <a ng-click="prompts[itm.key] = true" class="stack__button" title="Delete"><i class="icon icon-trash"></i></a>
-                                <a ng-click="copyToLocalStorage($event, $index)" ng-if="canCopy()" class="stack__button" title="Copy"><i class="icon icon-documents"></i></a>
                             </div>
                         </div>
                     </div>

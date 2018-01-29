@@ -55,7 +55,7 @@
         }
 
         $scope.copyToLocalStorage = function (evt, idx) {
-            var stackedContentItem = Object.assign({}, $scope.model.value[idx]);
+            var stackedContentItem = angular.extend({}, $scope.model.value[idx]);
             stackedContentItem.key = "";
             stackedContentItem.$$hashKey = "";
 
