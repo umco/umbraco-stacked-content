@@ -279,11 +279,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF %25ComputerName%25 == MBP13-PC-BC (
+    <PostBuildEvent>IF %25ComputerName%25 == DESKTOP-ESFKU58 (
   IF NOT "$(SolutionDir)" == "*Undefined*" (
-    xcopy /s /y "$(TargetPath)" "C:\Users\Matt\Work\Sandbox\Umbraco\UmbracoCms.7.5.2\bin\"
-    xcopy /s /y "$(TargetDir)$(ProjectName).pdb" "C:\Users\Matt\Work\Sandbox\Umbraco\UmbracoCms.7.5.2\bin\"
-    xcopy /s /y "$(ProjectDir)Web\UI\*.*" "C:\Users\Matt\Work\Sandbox\Umbraco\UmbracoCms.7.5.2\"
+    xcopy /s /y "$(TargetPath)" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\bin\"
+    xcopy /s /y "$(TargetDir)$(ProjectName).pdb" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\bin\"
+    xcopy /s /y "$(ProjectDir)Web\UI\*.*" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\"
   )
 )</PostBuildEvent>
   </PropertyGroup>
