@@ -12,6 +12,11 @@
         $scope.prompts = {};
         $scope.model.value = $scope.model.value || [];
 
+        // Sometimes changes in Inner Content require
+        // the stored models to be updated so we pass 
+        // the models through to be pre processed
+        innerContentService.preProcessModels($scope.model.value, $scope.model.config.contentTypes);
+
         $scope.canAdd = function () {
             return (!$scope.model.config.maxItems || $scope.model.config.maxItems == 0 || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode != "1";
         }
@@ -108,14 +113,14 @@
             $scope.inited = true;
 
             // Sync icons incase it's changes on the doctype
-            var aliases = _.uniq($scope.model.value.map(function (itm) {
-                return itm.icContentTypeAlias;
+            var guids = _.uniq($scope.model.value.map(function (itm) {
+                return itm.icContentTypeGuid;
             }));
 
-            innerContentService.getContentTypeIcons(aliases).then(function (data) {
+            innerContentService.getContentTypeIconsByGuid(guids).then(function (data) {
                 _.each($scope.model.value, function (itm) {
-                    if (data.hasOwnProperty(itm.icContentTypeAlias)) {
-                        itm.icon = data[itm.icContentTypeAlias];
+                    if (data.hasOwnProperty(itm.icContentTypeGuid)) {
+                        itm.icon = data[itm.icContentTypeGuid];
                     }
                 });
 
