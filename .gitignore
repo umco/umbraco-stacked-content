@@ -15,4 +15,3 @@ artifacts/
 src/packages/*/**
 build/_nuget/
 build/_umbraco/
-assets/

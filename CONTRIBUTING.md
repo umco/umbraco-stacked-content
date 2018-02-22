@@ -16,7 +16,7 @@ The issue tracker is the preferred channel for [bug reports](#bugs),
 requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
-  [Our Umbraco](https://our.umbraco.org/projects/backoffice-extensions/nested-content/nested-content-feedback) or Twitter).
+  [Our Umbraco](https://our.umbraco.org/projects/backoffice-extensions/stacked-content/stacked-content-feedback) or Twitter).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.

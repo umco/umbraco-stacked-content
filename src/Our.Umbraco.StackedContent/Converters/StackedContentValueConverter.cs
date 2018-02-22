@@ -31,9 +31,9 @@ namespace Our.Umbraco.StackedContent.Converters
                     return ConvertInnerContentDataToSource(rawValue, null, 1, preview);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                LogHelper.Error<StackedContentValueConverter>("Error converting value", e);
+                LogHelper.Error<StackedContentValueConverter>("Error converting value", ex);
             }
 
             return null;

@@ -35,7 +35,7 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
             // Return response
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(markup ?? "")
+                Content = new StringContent(markup ?? string.Empty)
             };
 
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");

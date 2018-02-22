@@ -30,7 +30,7 @@ We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-
 
 #### Manual build
 
-If you prefer, you can compile  Stacked Content yourself, you'll need:
+If you prefer, you can compile Stacked Content yourself, you'll need:
 
 * Visual Studio 2015 (or above)
 
