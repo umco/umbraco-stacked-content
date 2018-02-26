@@ -260,6 +260,7 @@
   <ItemGroup>
     <Compile Include="Bootstrap.cs" />
     <Compile Include="Converters\StackedContentValueConverter.cs" />
+    <Compile Include="Migrations\MigrationHelper.cs" />
     <Compile Include="Migrations\TargetOneOneZero\UpdateDataTypes.cs" />
     <Compile Include="Migrations\TargetOneOneZero\UpdatePropertyData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
