@@ -63,6 +63,7 @@ namespace Our.Umbraco.StackedContent.Migrations.TargetOneOneZero
                             continue;
 
                         option.icContentTypeGuid = docType.Key.ToString();
+                        option.icContentTypeAlias = null;
                         requiresSave = true;
                     }
 
@@ -79,6 +80,7 @@ namespace Our.Umbraco.StackedContent.Migrations.TargetOneOneZero
 #pragma warning disable IDE1006 // Naming Styles
         public class ContentTypeOption
         {
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public string icContentTypeAlias { get; set; }
             public string icContentTypeGuid { get; set; }
             public string nameTemplate { get; set; }
