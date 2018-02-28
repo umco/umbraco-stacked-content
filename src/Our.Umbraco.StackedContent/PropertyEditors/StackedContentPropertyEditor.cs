@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Our.Umbraco.InnerContent.PropertyEditors;
+using Umbraco.Core;
+using Umbraco.Core.Models;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Core.Services;
 
 namespace Our.Umbraco.StackedContent.PropertyEditors
 {
@@ -28,6 +33,34 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
             };
         }
 
+        internal static bool TryEnsureContentTypeGuids(JArray items, IContentTypeService contentTypeService)
+        {
+            if (items == null)
+                return false;
+
+            var persist = false;
+
+            foreach (var item in items)
+            {
+                var contentTypeGuid = item["icContentTypeGuid"];
+                if (contentTypeGuid != null)
+                    continue;
+
+                var contentTypeAlias = item["icContentTypeAlias"];
+                if (contentTypeAlias == null)
+                    continue;
+
+                var docType = contentTypeService.GetContentType(contentTypeAlias.Value<string>());
+                if (docType == null)
+                    continue;
+
+                item["icContentTypeGuid"] = docType.Key.ToString();
+                persist = true;
+            }
+
+            return persist;
+        }
+
         #region Pre Value Editor
 
         protected override PreValueEditor CreatePreValueEditor()
@@ -51,6 +84,24 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
 
             [PreValueField("disablePreview", "Disable Preview", "boolean", Description = "Set whether to disable the preview of the items in the stack.")]
             public string DisablePreview { get; set; }
+
+            public override IDictionary<string, object> ConvertDbToEditor(IDictionary<string, object> defaultPreVals, PreValueCollection persistedPreVals)
+            {
+                if (persistedPreVals.IsDictionaryBased)
+                {
+                    var dict = persistedPreVals.PreValuesAsDictionary;
+                    if (dict.TryGetValue("contentTypes", out PreValue contentTypes) && string.IsNullOrWhiteSpace(contentTypes.Value) == false)
+                    {
+                        var items = JArray.Parse(contentTypes.Value);
+                        if (TryEnsureContentTypeGuids(items, ApplicationContext.Current.Services.ContentTypeService))
+                        {
+                            contentTypes.Value = items.ToString();
+                        }
+                    }
+                }
+
+                return base.ConvertDbToEditor(defaultPreVals, persistedPreVals);
+            }
         }
 
         #endregion
@@ -59,7 +110,35 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
 
         protected override PropertyValueEditor CreateValueEditor()
         {
-            return new SimpleInnerContentPropertyValueEditor(base.CreateValueEditor());
+            return new StackedContentPropertyValueEditor(base.CreateValueEditor());
+        }
+
+        internal class StackedContentPropertyValueEditor : SimpleInnerContentPropertyValueEditor
+        {
+            public StackedContentPropertyValueEditor(PropertyValueEditor wrapped)
+                : base(wrapped)
+            { }
+
+            public override object ConvertDbToEditor(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
+            {
+                if (property.Value == null)
+                    return string.Empty;
+
+                var propertyValue = property.Value.ToString();
+                if (string.IsNullOrWhiteSpace(propertyValue))
+                    return string.Empty;
+
+                var value = JsonConvert.DeserializeObject<JToken>(propertyValue);
+                if (value is JArray items)
+                {
+                    if (TryEnsureContentTypeGuids(items, ApplicationContext.Current.Services.ContentTypeService))
+                    {
+                        property.Value = items.ToString();
+                    }
+                }
+
+                return base.ConvertDbToEditor(property, propertyType, dataTypeService);
+            }
         }
 
         #endregion
