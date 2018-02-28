@@ -21,10 +21,10 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
             // Setup default values
             _defaultPreValues = new Dictionary<string, object>
             {
-                {"contentTypes", ""},
-                {"maxItems", 0},
-                {"singleItemMode", "0"},
-                {"disablePreview", "0"}
+                { "contentTypes", "" },
+                { "maxItems", 0 },
+                { "singleItemMode", "0" },
+                { "disablePreview", "0" }
             };
         }
 
