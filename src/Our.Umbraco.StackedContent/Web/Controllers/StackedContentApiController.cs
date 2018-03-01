@@ -1,8 +1,10 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Web.Http;
 using Newtonsoft.Json.Linq;
 using Our.Umbraco.InnerContent.Helpers;
+using Our.Umbraco.StackedContent.Models;
 using Our.Umbraco.StackedContent.Web.Helpers;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
@@ -16,8 +18,12 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
         public HttpResponseMessage GetPreviewMarkup([FromBody] JObject item, int parentId)
         {
             // Get parent to container node
-            //TODO: Convert IContent if no published content?
             var parent = UmbracoContext.ContentCache.GetById(parentId);
+            if (parent == null)
+            {
+                // If unpublished, then get the IContent and convert to fake PublishedContent
+                parent = new UnpublishedContent(Services.ContentService.GetById(parentId));
+            }
 
             // Convert item
             var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, parent);
@@ -38,7 +44,7 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
                 Content = new StringContent(markup ?? string.Empty)
             };
 
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Text.Html);
 
             return response;
         }
