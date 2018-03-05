@@ -1,7 +1,7 @@
 ﻿{
     "javascript" : [
-        '~/App_Plugins/StackedContent/js/stackedcontent.resources.js',
-        '~/App_Plugins/StackedContent/js/stackedcontent.controllers.js'
+        "~/App_Plugins/StackedContent/js/stackedcontent.resources.js",
+        "~/App_Plugins/StackedContent/js/stackedcontent.controllers.js"
     ],
     "css" : [
         "~/App_Plugins/StackedContent/css/stackedcontent.css"
