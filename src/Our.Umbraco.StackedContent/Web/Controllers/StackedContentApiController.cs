@@ -1,8 +1,10 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Web.Http;
 using Newtonsoft.Json.Linq;
 using Our.Umbraco.InnerContent.Helpers;
+using Our.Umbraco.StackedContent.Models;
 using Our.Umbraco.StackedContent.Web.Helpers;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
@@ -13,17 +15,21 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
     public class StackedContentApiController : UmbracoAuthorizedApiController
     {
         [HttpPost]
-        public HttpResponseMessage GetPreviewMarkup([FromBody] JObject item, int parentId)
+        public HttpResponseMessage GetPreviewMarkup([FromBody] JObject item, int pageId)
         {
-            // Get parent to container node
-            //TODO: Convert IContent if no published content?
-            var parent = UmbracoContext.ContentCache.GetById(parentId);
+            // Get page container node
+            var page = UmbracoContext.ContentCache.GetById(pageId);
+            if (page == null)
+            {
+                // If unpublished, then fake PublishedContent (with IContent object)
+                page = new UnpublishedContent(pageId, Services);
+            }
 
             // Convert item
-            var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, parent);
+            var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, page);
 
             // Construct preview model
-            var model = new PreviewModel { Page = parent, Item = content };
+            var model = new PreviewModel { Page = page, Item = content };
 
             // Render view
             var markup = ViewHelper.RenderPartial(content.DocumentTypeAlias, model, new[]
@@ -38,7 +44,7 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
                 Content = new StringContent(markup ?? string.Empty)
             };
 
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Text.Html);
 
             return response;
         }
