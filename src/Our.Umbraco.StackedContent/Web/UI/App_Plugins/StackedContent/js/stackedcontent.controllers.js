@@ -12,11 +12,6 @@
         $scope.prompts = {};
         $scope.model.value = $scope.model.value || [];
 
-        // Sometimes changes in Inner Content require
-        // the stored models to be updated so we pass 
-        // the models through to be pre processed
-        innerContentService.preProcessModels($scope.model.value, $scope.model.config.contentTypes);
-
         $scope.canAdd = function () {
             return (!$scope.model.config.maxItems || $scope.model.config.maxItems == 0 || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode != "1";
         }
