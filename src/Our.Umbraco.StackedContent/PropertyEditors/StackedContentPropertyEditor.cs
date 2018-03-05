@@ -23,9 +23,6 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
 
         internal class StackedContentPreValueEditor : SimpleInnerContentPreValueEditor
         {
-            [PreValueField("contentTypes", "Content Types", "~/App_Plugins/InnerContent/views/innercontent.doctypepicker.html", Description = "Select the content types to use as the data blueprint.")]
-            public new string[] ContentTypes { get; set; }
-
             [PreValueField("maxItems", "Max Items", "number", Description = "Set the maximum number of items allowed in this stack.")]
             public string MaxItems { get; set; }
 
