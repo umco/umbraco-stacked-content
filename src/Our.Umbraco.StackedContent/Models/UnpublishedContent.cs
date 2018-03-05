@@ -17,6 +17,8 @@ namespace Our.Umbraco.StackedContent.Models
         private readonly Lazy<string> creatorName;
         private readonly Lazy<string> urlName;
         private readonly Lazy<string> writerName;
+        private readonly Lazy<IPublishedContent> parent;
+        private readonly Lazy<IEnumerable<IPublishedContent>> children;
         private readonly IPublishedProperty[] properties;
 
         public UnpublishedContent(IContent content)
@@ -31,6 +33,8 @@ namespace Our.Umbraco.StackedContent.Models
             this.creatorName = new Lazy<string>(() => this.content.GetCreatorProfile(userService.Value).Name);
             this.urlName = new Lazy<string>(() => this.content.Name.ToUrlSegment());
             this.writerName = new Lazy<string>(() => this.content.GetWriterProfile(userService.Value).Name);
+            this.parent = new Lazy<IPublishedContent>(() => new UnpublishedContent(this.content.Parent()));
+            this.children = new Lazy<IEnumerable<IPublishedContent>>(() => this.content.Children().Select(x => new UnpublishedContent(x)));
 
             // TODO: Implement the IContent properties! [LK:2018-02-28]
             this.properties = MapProperties(
@@ -77,9 +81,9 @@ namespace Our.Umbraco.StackedContent.Models
 
         public override bool IsDraft => true;
 
-        public override IPublishedContent Parent => new UnpublishedContent(this.content.Parent());
+        public override IPublishedContent Parent => this.parent.Value;
 
-        public override IEnumerable<IPublishedContent> Children => this.content.Children().Select(x => new UnpublishedContent(x));
+        public override IEnumerable<IPublishedContent> Children => this.children.Value;
 
         public override PublishedContentType ContentType => this.contentType.Value;
 
