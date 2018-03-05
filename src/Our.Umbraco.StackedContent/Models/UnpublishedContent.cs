@@ -36,7 +36,7 @@ namespace Our.Umbraco.StackedContent.Models
 
             this.content = content;
 
-            this.children = new Lazy<IEnumerable<IPublishedContent>>(() => this.content.Children().Select(x => new UnpublishedContent(x, serviceContext)));
+            this.children = new Lazy<IEnumerable<IPublishedContent>>(() => this.content.Children().Select(x => new UnpublishedContent(x, serviceContext)).ToList());
             this.contentType = new Lazy<PublishedContentType>(() => PublishedContentType.Get(this.ItemType, this.DocumentTypeAlias));
             this.creatorName = new Lazy<string>(() => this.content.GetCreatorProfile(userService.Value).Name);
             this.parent = new Lazy<IPublishedContent>(() => new UnpublishedContent(this.content.Parent(), serviceContext));
