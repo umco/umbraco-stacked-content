@@ -13,30 +13,39 @@ namespace Our.Umbraco.StackedContent.Models
     internal class UnpublishedContent : PublishedContentWithKeyBase
     {
         private readonly IContent content;
+        private readonly ServiceContext serviceContext;
+
+        private readonly Lazy<IEnumerable<IPublishedContent>> children;
         private readonly Lazy<PublishedContentType> contentType;
         private readonly Lazy<string> creatorName;
+        private readonly Lazy<IPublishedContent> parent;
+        private readonly IPublishedProperty[] properties;
         private readonly Lazy<string> urlName;
         private readonly Lazy<string> writerName;
-        private readonly Lazy<IPublishedContent> parent;
-        private readonly Lazy<IEnumerable<IPublishedContent>> children;
-        private readonly IPublishedProperty[] properties;
 
-        public UnpublishedContent(IContent content)
+        public UnpublishedContent(int id, ServiceContext serviceContext)
+            : this(serviceContext.ContentService.GetById(id), serviceContext)
+        { }
+
+        public UnpublishedContent(IContent content, ServiceContext serviceContext)
             : base()
         {
             Mandate.ParameterNotNull(content, nameof(content));
+            Mandate.ParameterNotNull(serviceContext, nameof(serviceContext));
 
-            var userService = new Lazy<IUserService>(() => ApplicationContext.Current.Services.UserService);
+            var userService = new Lazy<IUserService>(() => serviceContext.UserService);
 
             this.content = content;
+            this.serviceContext = serviceContext;
+
+            this.children = new Lazy<IEnumerable<IPublishedContent>>(() => this.content.Children().Select(x => new UnpublishedContent(x, serviceContext)));
             this.contentType = new Lazy<PublishedContentType>(() => PublishedContentType.Get(this.ItemType, this.DocumentTypeAlias));
             this.creatorName = new Lazy<string>(() => this.content.GetCreatorProfile(userService.Value).Name);
+            this.parent = new Lazy<IPublishedContent>(() => new UnpublishedContent(this.content.Parent(), serviceContext));
             this.urlName = new Lazy<string>(() => this.content.Name.ToUrlSegment());
             this.writerName = new Lazy<string>(() => this.content.GetWriterProfile(userService.Value).Name);
-            this.parent = new Lazy<IPublishedContent>(() => new UnpublishedContent(this.content.Parent()));
-            this.children = new Lazy<IEnumerable<IPublishedContent>>(() => this.content.Children().Select(x => new UnpublishedContent(x)));
 
-            // TODO: Implement the IContent properties! [LK:2018-02-28]
+            // TODO: Refactor `MapProperties` [LK:2018-03-05]
             this.properties = MapProperties(
                 this.contentType.Value.PropertyTypes,
                 this.content.Properties,
@@ -94,13 +103,13 @@ namespace Our.Umbraco.StackedContent.Models
             return this.properties.FirstOrDefault(x => x.PropertyTypeAlias.InvariantEquals(alias));
         }
 
-        private static IEnumerable<IPublishedProperty> MapProperties(
+        private IEnumerable<IPublishedProperty> MapProperties(
             IEnumerable<PublishedPropertyType> propertyTypes,
             IEnumerable<Property> properties,
             Func<PublishedPropertyType, object, IPublishedProperty> map)
         {
             var propertyEditorResolver = PropertyEditorResolver.Current;
-            var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+            var dataTypeService = this.serviceContext.DataTypeService;
 
             return propertyTypes.Select(x =>
             {

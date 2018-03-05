@@ -22,7 +22,7 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
             if (page == null)
             {
                 // If unpublished, then fake PublishedContent (with IContent object)
-                page = new UnpublishedContent(Services.ContentService.GetById(pageId));
+                page = new UnpublishedContent(pageId, Services);
             }
 
             // Convert item
