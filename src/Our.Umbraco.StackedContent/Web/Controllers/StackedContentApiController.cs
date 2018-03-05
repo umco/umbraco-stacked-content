@@ -15,21 +15,21 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
     public class StackedContentApiController : UmbracoAuthorizedApiController
     {
         [HttpPost]
-        public HttpResponseMessage GetPreviewMarkup([FromBody] JObject item, int parentId)
+        public HttpResponseMessage GetPreviewMarkup([FromBody] JObject item, int pageId)
         {
-            // Get parent to container node
-            var parent = UmbracoContext.ContentCache.GetById(parentId);
-            if (parent == null)
+            // Get page container node
+            var page = UmbracoContext.ContentCache.GetById(pageId);
+            if (page == null)
             {
-                // If unpublished, then get the IContent and convert to fake PublishedContent
-                parent = new UnpublishedContent(Services.ContentService.GetById(parentId));
+                // If unpublished, then fake PublishedContent (with IContent object)
+                page = new UnpublishedContent(Services.ContentService.GetById(pageId));
             }
 
             // Convert item
-            var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, parent);
+            var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, page);
 
             // Construct preview model
-            var model = new PreviewModel { Page = parent, Item = content };
+            var model = new PreviewModel { Page = page, Item = content };
 
             // Render view
             var markup = ViewHelper.RenderPartial(content.DocumentTypeAlias, model, new[]
