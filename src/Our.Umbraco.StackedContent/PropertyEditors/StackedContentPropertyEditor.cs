@@ -1,5 +1,8 @@
-﻿using Umbraco.Core.PropertyEditors;
+﻿using System.Linq;
+using Umbraco.Core.PropertyEditors;
 using Our.Umbraco.InnerContent.PropertyEditors;
+using Umbraco.Core;
+using Umbraco.Core.Models;
 
 namespace Our.Umbraco.StackedContent.PropertyEditors
 {
@@ -14,6 +17,32 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
             DefaultPreValues.Add("maxItems", 0);
             DefaultPreValues.Add("singleItemMode", "0");
             DefaultPreValues.Add("disablePreview", "0");
+        }
+
+        protected override PropertyValueEditor CreateValueEditor()
+        {
+            return new StackedContentValueEditor(base.CreateValueEditor());
+        }
+
+        internal class StackedContentValueEditor : SimpleInnerContentPropertyValueEditor
+        {
+            public StackedContentValueEditor(PropertyValueEditor wrapped) : base(wrapped)
+            { }
+
+            public override void ConfigureForDisplay(PreValueCollection preValues)
+            {
+                base.ConfigureForDisplay(preValues);
+
+                var asDictionary = preValues.PreValuesAsDictionary.ToDictionary(x => x.Key, x => x.Value.Value);
+                if (asDictionary.ContainsKey("hideLabel"))
+                {
+                    var boolAttempt = asDictionary["hideLabel"].TryConvertTo<bool>();
+                    if (boolAttempt.Success)
+                    {
+                        HideLabel = boolAttempt.Result;
+                    }
+                }
+            }
         }
 
         protected override PreValueEditor CreatePreValueEditor()
