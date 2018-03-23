@@ -32,11 +32,7 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
             var model = new PreviewModel { Page = page, Item = content };
 
             // Render view
-            var markup = ViewHelper.RenderPartial(content.DocumentTypeAlias, model, new[]
-            {
-                "~/Views/Partials/Stack/{0}.cshtml",
-                "~/Views/Partials/Stack/Default.cshtml",
-            });
+            var markup = ViewHelper.RenderPartial(content.DocumentTypeAlias, model);
 
             // Return response
             var response = new HttpResponseMessage
