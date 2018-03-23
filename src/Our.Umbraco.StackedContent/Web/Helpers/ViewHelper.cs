@@ -44,7 +44,7 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
                 var viewResult = ViewEngine.FindPartialView(controllerContext, partialName, false);
                 if (viewResult.View == null)
                 {
-                    LogHelper.Warn(typeof(ViewHelper), "No view found for partial '" + partialName + "'");
+                    LogHelper.Warn(typeof(ViewHelper), $"No view found for partial '{partialName}'");
                     return null;
                 }
 
