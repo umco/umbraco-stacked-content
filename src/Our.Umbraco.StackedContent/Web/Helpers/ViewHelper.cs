@@ -20,11 +20,11 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
             }
         };
 
-        public static void AddViewLocationFormats(params string[] viewLocations)
+        public static void AddViewLocationFormats(params string[] viewLocationFormats)
         {
             var newFormats = ViewEngine
                 .PartialViewLocationFormats
-                .Union(viewLocations)
+                .Union(viewLocationFormats)
                 .ToArray();
 
             ViewEngine.PartialViewLocationFormats = newFormats;
