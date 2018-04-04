@@ -46,7 +46,7 @@
             cursorAt: {
                 top: 0
             },
-            update: function (e, ui) {
+            stop: function (e, ui) {
                 _.each($scope.model.value, function (itm, idx) {
                     innerContentService.populateName(itm, idx, $scope.model.config.contentTypes);
                 });
