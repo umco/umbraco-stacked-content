@@ -14,7 +14,7 @@
     position: relative;
     display: block;
     margin: 0;
-    z-index: 10;
+    z-index: 9;
 }
 
 .stack__preview-wrapper {
