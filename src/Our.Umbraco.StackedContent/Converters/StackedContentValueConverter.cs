@@ -21,18 +21,14 @@ namespace Our.Umbraco.StackedContent.Converters
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
-            if (source == null)
-                return null;
-
-            var str = source.ToString();
-            if (string.IsNullOrWhiteSpace(str))
+            var value = source?.ToString();
+            if (value == null || string.IsNullOrWhiteSpace(value))
                 return null;
 
             try
             {
-                var rawValue = JsonConvert.DeserializeObject<JArray>(str);
-
-                return ConvertInnerContentDataToSource(rawValue, null, 1, preview);
+                var items = JsonConvert.DeserializeObject<JArray>(value);
+                return ConvertInnerContentDataToSource(items, null, 1, preview);
             }
             catch (Exception ex)
             {
