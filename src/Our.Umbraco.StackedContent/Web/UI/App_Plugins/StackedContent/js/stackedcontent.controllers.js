@@ -34,6 +34,7 @@
 
         $scope.deleteContent = function (evt, idx) {
             $scope.model.value.splice(idx, 1);
+            setDirty();
         }
 
         $scope.sortableOptions = {
@@ -50,6 +51,7 @@
                 _.each($scope.model.value, function (itm, idx) {
                     innerContentService.populateName(itm, idx, $scope.model.config.contentTypes);
                 });
+                setDirty();
             }
         };
 
@@ -68,6 +70,11 @@
             return $scope.model.config.disablePreview !== "1";
         }
 
+        var setDirty = function () {
+            if ($scope.propertyForm) {
+                $scope.propertyForm.$setDirty();
+            }
+        };
 
         // Set overlay config
         $scope.overlayConfig = {
