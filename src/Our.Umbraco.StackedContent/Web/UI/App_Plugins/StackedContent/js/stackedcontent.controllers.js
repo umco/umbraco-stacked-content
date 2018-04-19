@@ -56,9 +56,9 @@
         }
 
         $scope.copyToLocalStorage = function (evt, idx) {
-            var stackedContentItem = angular.extend({}, $scope.model.value[idx]);
+            var stackedContentItem = JSON.parse(JSON.stringify($scope.model.value[idx]));
             stackedContentItem.key = "";
-            stackedContentItem.$$hashKey = "";
+            delete stackedContentItem.$$hashKey;
 
             if (validateModel(stackedContentItem)) {
                 window.localStorage.setItem("StackedContentCopy", JSON.stringify(stackedContentItem));
@@ -71,6 +71,7 @@
 
         $scope.pasteFromLocalStorage = function (evt, idx) {
             var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
+            stackedContentItem.key = innerContentService.generateUid();
             if (!stackedContentItem) {
                 notificationsService.error("Stacked Content", "You need to copy content first.");
                 return;
