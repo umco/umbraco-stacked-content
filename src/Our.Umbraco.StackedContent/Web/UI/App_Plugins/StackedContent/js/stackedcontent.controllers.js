@@ -14,12 +14,12 @@
         $scope.model.value = $scope.model.value || [];
 
         $scope.canAdd = function () {
-            return (!$scope.model.config.maxItems || $scope.model.config.maxItems == 0 || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode != "1";
-        }
+            return (!$scope.model.config.maxItems || $scope.model.config.maxItems === 0 || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode !== "1";
+        };
 
         $scope.canDelete = function () {
             return $scope.model.config.singleItemMode !== "1";
-        }
+        };
 
         $scope.canCopy = function () {
             var test = "test";
@@ -42,18 +42,18 @@
             $scope.overlayConfig.event = evt;
             $scope.overlayConfig.data = { model: null, idx: idx, action: "add" };
             $scope.overlayConfig.show = true;
-        }
+        };
 
         $scope.editContent = function (evt, idx, itm) {
             $scope.overlayConfig.event = evt;
             $scope.overlayConfig.data = { model: itm, idx: idx, action: "edit" };
             $scope.overlayConfig.show = true;
-        }
+        };
 
         $scope.deleteContent = function (evt, idx) {
             $scope.model.value.splice(idx, 1);
             setDirty();
-        }
+        };
 
         $scope.copyToLocalStorage = function (evt, idx) {
             var stackedContentItem = JSON.parse(JSON.stringify($scope.model.value[idx]));
@@ -111,11 +111,11 @@
                     }
                 });
             });
-        }
+        };
 
         var previewEnabled = function () {
             return $scope.model.config.disablePreview !== "1";
-        }
+        };
 
         var setDirty = function () {
             if ($scope.propertyForm) {
@@ -163,7 +163,7 @@
                     $scope.model.value[data.idx] = data.model;
                 }
             }
-        }
+        };
 
         // Initialize value
         if ($scope.model.value.length > 0) {
