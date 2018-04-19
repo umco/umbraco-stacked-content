@@ -14,7 +14,7 @@
     position: relative;
     display: block;
     margin: 0;
-    z-index: 10;
+    z-index: 9;
 }
 
 .stack__preview-wrapper {
@@ -75,19 +75,19 @@
 }
 
 .stacked-content .placeholder:hover {
-    border-color: #2e8aea;
+    border-color: #00aea2;
     background-color: #fff;
 }
 
 .stacked-content .placeholder:hover * {
-    color: #2e8aea;
+    color: #00aea2;
 }
 
 .stack__buttons {
     position: absolute;
     right: -12px;
     top: 10px;
-    background-color: #2e8aea;
+    background-color: #625a74;
     color: white;
     opacity: 0;
     transition: opacity .25s ease-in-out;
@@ -96,18 +96,21 @@
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 
 .stack__buttons:after {
     position: absolute;
     bottom: -12px;
-    right: 0;
+    right: 1px;
     content: "";
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 12px 12px 0 0;
-    border-color: #1960ab transparent transparent transparent;
+    border-width: 12px 11px 0 0;
+    border-color: #2e2246 transparent transparent transparent;
 }
 
 .stack__buttons .umb_confirm-action__overlay {
@@ -119,7 +122,7 @@
 
 .stack__buttons .umb_confirm-action__overlay-action {
     margin: 0 !important;
-    background-color: #2e8aea;
+    background-color: #625a74;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
@@ -144,7 +147,7 @@
 .stack__paste-button,
 .stack__buttons .umb_confirm-action__overlay-action {
     display: inline-block;
-    background-color: #2e8aea;
+    background-color: #625a74;
     color: white !important;
     font-size: 20px;
     text-decoration: none !important;
@@ -153,7 +156,11 @@
     line-height: 30px;
     text-align: center;
     cursor: pointer;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
+
 
 .stack__button:hover,
 .stack__add-button:hover,
@@ -166,14 +173,24 @@
 
 .stack__buttons .umb_confirm-action__overlay-action.-confirm:hover {
     background-color: #2ecc71;
+    -webkit-border-top-right-radius: 0;
+    -moz-border-top-right-radius: 0;
+    border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .stack__buttons .umb_confirm-action__overlay-action.-cancel:hover {
     background-color: #e74c3c;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
 .stack__add-button,
 .stack__paste-button {
+    background-color: #00aea2;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
@@ -223,7 +240,7 @@
     top: 5px;
     height: 2px !important;
     visibility: visible !important;
-    background-color: #2e8aea;
+    background-color: #00aea2;
 }
 
 .stack__sortable-helper {
@@ -239,7 +256,7 @@
     height: 40px;
     line-height: 40px;
     text-align: center;
-    background-color: #2e8aea;
+    background-color: #00aea2;
     color: white;
     margin: 0 0 0 -20px;
     -webkit-border-radius: 2px;

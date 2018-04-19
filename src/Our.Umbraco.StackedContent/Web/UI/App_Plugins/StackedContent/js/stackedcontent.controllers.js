@@ -52,6 +52,7 @@
 
         $scope.deleteContent = function (evt, idx) {
             $scope.model.value.splice(idx, 1);
+            setDirty();
         }
 
         $scope.copyToLocalStorage = function (evt, idx) {
@@ -94,10 +95,11 @@
             cursorAt: {
                 top: 0
             },
-            update: function (e, ui) {
+            stop: function (e, ui) {
                 _.each($scope.model.value, function (itm, idx) {
                     innerContentService.populateName(itm, idx, $scope.model.config.contentTypes);
                 });
+                setDirty();
             }
         };
 
@@ -115,6 +117,12 @@
         var previewEnabled = function () {
             return $scope.model.config.disablePreview !== "1";
         }
+
+        var setDirty = function () {
+            if ($scope.propertyForm) {
+                $scope.propertyForm.$setDirty();
+            }
+        };
 
         var validateModel = function (model) {
             try {
@@ -165,14 +173,14 @@
             $scope.inited = true;
 
             // Sync icons incase it's changes on the doctype
-            var aliases = _.uniq($scope.model.value.map(function (itm) {
-                return itm.icContentTypeAlias;
+            var guids = _.uniq($scope.model.value.map(function (itm) {
+                return itm.icContentTypeGuid;
             }));
 
-            innerContentService.getContentTypeIcons(aliases).then(function (data) {
+            innerContentService.getContentTypeIconsByGuid(guids).then(function (data) {
                 _.each($scope.model.value, function (itm) {
-                    if (data.hasOwnProperty(itm.icContentTypeAlias)) {
-                        itm.icon = data[itm.icContentTypeAlias];
+                    if (data.hasOwnProperty(itm.icContentTypeGuid)) {
+                        itm.icon = data[itm.icContentTypeGuid];
                     }
                 });
 

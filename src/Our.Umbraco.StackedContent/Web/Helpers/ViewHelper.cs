@@ -1,39 +1,57 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.StackedContent.Web.Helpers
 {
-    internal static class ViewHelper
+    public static class ViewHelper
     {
-        class DummyController : Controller { }
+        private class DummyController : Controller { }
 
-        public static string RenderPartial(string partialName, object model, string[] viewLocations)
+        private static readonly RazorViewEngine ViewEngine = new RazorViewEngine
         {
-            var sw = new StringWriter();
-            var httpContext = new HttpContextWrapper(HttpContext.Current);
-
-            var routeData = new RouteData();
-            routeData.Values.Add("controller", "DummyController");
-
-            var controllerContext = new ControllerContext(new RequestContext(httpContext, routeData), new DummyController());
-
-            var viewEngine = new RazorViewEngine
+            PartialViewLocationFormats = new[]
             {
-                PartialViewLocationFormats = viewLocations
-            };
-
-            var viewResult = viewEngine.FindPartialView(controllerContext, partialName, false);
-            if (viewResult.View == null)
-            {
-                //TODO: Log lack of view?
-                return null;
+                "~/Views/Partials/Stack/{0}.cshtml",
+                "~/Views/Partials/Stack/Default.cshtml"
             }
+        };
 
-            viewResult.View.Render(new ViewContext(controllerContext, viewResult.View, new ViewDataDictionary { Model = model }, new TempDataDictionary(), sw), sw);
+        public static void AddViewLocationFormats(params string[] viewLocationFormats)
+        {
+            var newFormats = ViewEngine
+                .PartialViewLocationFormats
+                .Union(viewLocationFormats)
+                .ToArray();
 
-            return sw.ToString();
+            ViewEngine.PartialViewLocationFormats = newFormats;
+        }
+
+        internal static string RenderPartial(string partialName, object model)
+        {
+            using (var sw = new StringWriter())
+            {
+                var httpContext = new HttpContextWrapper(HttpContext.Current);
+
+                var routeData = new RouteData();
+                routeData.Values.Add("controller", "DummyController");
+
+                var controllerContext = new ControllerContext(new RequestContext(httpContext, routeData), new DummyController());
+                
+                var viewResult = ViewEngine.FindPartialView(controllerContext, partialName, false);
+                if (viewResult.View == null)
+                {
+                    LogHelper.Warn(typeof(ViewHelper), $"No view found for partial '{partialName}'");
+                    return null;
+                }
+
+                viewResult.View.Render(new ViewContext(controllerContext, viewResult.View, new ViewDataDictionary { Model = model }, new TempDataDictionary(), sw), sw);
+
+                return sw.ToString();
+            }
         }
     }
 }

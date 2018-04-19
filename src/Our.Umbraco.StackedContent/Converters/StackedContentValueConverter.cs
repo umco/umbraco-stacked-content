@@ -12,8 +12,7 @@ using Umbraco.Core.PropertyEditors;
 
 namespace Our.Umbraco.StackedContent.Converters
 {
-    [PropertyValueType(typeof(IEnumerable<IPublishedContent>))]
-    public class StackedContentValueConverter : InnerContentValueConverter
+    public class StackedContentValueConverter : InnerContentValueConverter, IPropertyValueConverterMeta
     {
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
@@ -22,21 +21,31 @@ namespace Our.Umbraco.StackedContent.Converters
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
+            var value = source?.ToString();
+            if (value == null || string.IsNullOrWhiteSpace(value))
+                return null;
+
             try
             {
-                if (source != null && !source.ToString().IsNullOrWhiteSpace())
-                {
-                    var rawValue = JsonConvert.DeserializeObject<JArray>(source.ToString());
-
-                    return ConvertInnerContentDataToSource(rawValue, null, 1, preview);
-                }
+                var items = JsonConvert.DeserializeObject<JArray>(value);
+                return ConvertInnerContentDataToSource(items, null, 1, preview);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                LogHelper.Error<StackedContentValueConverter>("Error converting value", e);
+                LogHelper.Error<StackedContentValueConverter>("Error converting value", ex);
             }
 
             return null;
+        }
+
+        public Type GetPropertyValueType(PublishedPropertyType propertyType)
+        {
+            return typeof(IEnumerable<IPublishedContent>);
+        }
+
+        public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)
+        {
+            return PropertyCacheLevel.Content;
         }
     }
 }

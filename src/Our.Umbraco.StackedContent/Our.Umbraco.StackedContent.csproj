@@ -146,9 +146,8 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Our.Umbraco.InnerContent, Version=1.0.6286.21529, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Our.Umbraco.InnerContent.Core.1.0.3\lib\net45\Our.Umbraco.InnerContent.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Our.Umbraco.InnerContent, Version=1.1.6638.5280, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Our.Umbraco.InnerContent.Core.1.1.0\lib\net45\Our.Umbraco.InnerContent.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -259,6 +258,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\StackedContentValueConverter.cs" />
+    <Compile Include="Models\UnpublishedContent.cs" />
+    <Compile Include="Models\UnpublishedProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="PropertyEditors\StackedContentPropertyEditor.cs" />
@@ -279,11 +280,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF %25ComputerName%25 == MBP13-PC-BC (
+    <PostBuildEvent>IF %25ComputerName%25 == DESKTOP-ESFKU58 (
   IF NOT "$(SolutionDir)" == "*Undefined*" (
-    xcopy /s /y "$(TargetPath)" "C:\Users\Matt\Work\Sandbox\Umbraco\UmbracoCms.7.5.2\bin\"
-    xcopy /s /y "$(TargetDir)$(ProjectName).pdb" "C:\Users\Matt\Work\Sandbox\Umbraco\UmbracoCms.7.5.2\bin\"
-    xcopy /s /y "$(ProjectDir)Web\UI\*.*" "C:\Users\Matt\Work\Sandbox\Umbraco\UmbracoCms.7.5.2\"
+    xcopy /s /y "$(TargetPath)" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\bin\"
+    xcopy /s /y "$(TargetDir)$(ProjectName).pdb" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\bin\"
+    xcopy /s /y "$(ProjectDir)Web\UI\*.*" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\"
   )
 )</PostBuildEvent>
   </PropertyGroup>
