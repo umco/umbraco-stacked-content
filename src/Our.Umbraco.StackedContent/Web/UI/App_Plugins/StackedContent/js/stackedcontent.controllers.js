@@ -2,10 +2,11 @@
 
     "$scope",
     "editorState",
+    "notificationsService",
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
 
-    function ($scope, editorState, innerContentService, scResources) {
+    function ($scope, editorState, notificationsService, innerContentService, scResources) {
 
         $scope.inited = false;
         $scope.markup = {};
@@ -18,6 +19,23 @@
 
         $scope.canDelete = function () {
             return $scope.model.config.singleItemMode !== "1";
+        }
+
+        $scope.canCopy = function () {
+            var test = "test";
+            try {
+                window.localStorage.setItem(test, test);
+                window.localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+		}
+
+        $scope.canPaste = function () {
+            var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
+            if (stackedContentItem && validateModel(stackedContentItem)) return true;
+            return false;
         }
 
         $scope.addContent = function (evt, idx) {
@@ -35,6 +53,35 @@
         $scope.deleteContent = function (evt, idx) {
             $scope.model.value.splice(idx, 1);
             setDirty();
+        }
+
+        $scope.copyToLocalStorage = function (evt, idx) {
+            var stackedContentItem = JSON.parse(JSON.stringify($scope.model.value[idx]));
+            stackedContentItem.key = "";
+            delete stackedContentItem.$$hashKey;
+
+            if (validateModel(stackedContentItem)) {
+                window.localStorage.setItem("StackedContentCopy", JSON.stringify(stackedContentItem));
+                notificationsService.success("Stacked Content", "Copied to clipboard.");
+                return;
+            } else {
+                notificationsService.error("Stacked Content", "Sorry, something went wrong.");
+            }
+        }
+
+        $scope.pasteFromLocalStorage = function (evt, idx) {
+            var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
+            stackedContentItem.key = innerContentService.generateUid();
+            if (!stackedContentItem) {
+                notificationsService.error("Stacked Content", "You need to copy content first.");
+                return;
+            }
+            if (validateModel(stackedContentItem)) {
+                $scope.overlayConfig.callback({ model: stackedContentItem, idx: idx, action: "add" });
+                return;
+            } else {
+                notificationsService.error("Stacked Content", "Sorry, this content is not allowed here.");
+            }
         }
 
         $scope.sortableOptions = {
@@ -75,6 +122,16 @@
                 $scope.propertyForm.$setDirty();
             }
         };
+
+        var validateModel = function (model) {
+            try {
+                if (!model || !model.icContentTypeGuid) return false;
+                if (!$scope.model.config.contentTypes.filter(x => x.icContentTypeGuid === model.icContentTypeGuid).length) return false;
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
 
         // Set overlay config
         $scope.overlayConfig = {
