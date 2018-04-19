@@ -127,8 +127,8 @@
 
         var validateModel = function (model) {
             try {
-                if (!model || !model.icContentTypeAlias) return false;
-                if (!$scope.model.config.contentTypes.filter(x => x.icContentTypeAlias === model.icContentTypeAlias).length) return false;
+                if (!model || !model.icContentTypeGuid) return false;
+                if (!$scope.model.config.contentTypes.filter(x => x.icContentTypeGuid === model.icContentTypeGuid).length) return false;
                 return true;
             } catch (e) {
                 return false;
