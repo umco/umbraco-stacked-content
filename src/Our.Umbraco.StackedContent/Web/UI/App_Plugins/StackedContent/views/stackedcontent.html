@@ -15,7 +15,7 @@
                 <div class="stack__item" ng-repeat="itm in model.value">
                     <div class="stack__add-bar stack__add-bar--top" ng-if="model.config.singleItemMode !== '1'">
                         <a ng-click="addContent($event, $index)" class="stack__add-button" ng-if="canAdd()" title="Add"><i class="icon icon-add"></i></a>
-                        <a ng-click="pasteFromLocalStorage($event, $index)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
+                        <a ng-click="pasteContent($event, $index)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
                     </div>
                     <div class="stack__preview-wrapper">
                         <a ng-click="editContent($event, $index, itm)" class="stack__preview stack__preview--default" ng-if="!markup[itm.key]">
@@ -27,7 +27,7 @@
                         </a>
                         <div class="stack__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
                             <div class="no-overflow">
-								<a ng-click="copyToLocalStorage($event, $index)" ng-if="canCopy()" class="stack__button" title="Copy"><i class="icon icon-documents"></i></a>
+                                <a ng-click="copyContent($event, $index)" ng-if="canCopy() && !prompts[itm.key]" class="stack__button" title="Copy"><i class="icon icon-documents"></i></a>
                                 <umb-confirm-action ng-if="prompts[itm.key]"
                                                     direction="left"
                                                     on-confirm="deleteContent($event, $index)"
@@ -43,7 +43,7 @@
 
             <div class="stack__add-bar stack__add-bar--bottom" ng-if="model.config.singleItemMode !== '1'">
                 <a ng-click="addContent($event, model.value.length)" class="stack__add-button" ng-if="canAdd()" title="Add"><i class="icon icon-add"></i></a>
-                <a ng-click="pasteFromLocalStorage($event, model.value.length)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
+                <a ng-click="pasteContent($event, model.value.length)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
             </div>
 
         </div>

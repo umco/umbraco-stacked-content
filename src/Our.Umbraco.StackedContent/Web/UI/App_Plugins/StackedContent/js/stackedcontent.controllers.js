@@ -22,21 +22,18 @@
         };
 
         $scope.canCopy = function () {
-            var test = "test";
             try {
-                window.localStorage.setItem(test, test);
-                window.localStorage.removeItem(test);
-                return true;
+                return !!sessionStorage.getItem;
             } catch (e) {
                 return false;
             }
-		}
+        };
 
         $scope.canPaste = function () {
-            var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
-            if (stackedContentItem && validateModel(stackedContentItem)) return true;
+            var item = JSON.parse(window.localStorage.getItem("InnerContent_CopiedItems"));
+            if (item && validateModel(item)) return true;
             return false;
-        }
+        };
 
         $scope.addContent = function (evt, idx) {
             $scope.overlayConfig.event = evt;
@@ -55,34 +52,34 @@
             setDirty();
         };
 
-        $scope.copyToLocalStorage = function (evt, idx) {
-            var stackedContentItem = JSON.parse(JSON.stringify($scope.model.value[idx]));
-            stackedContentItem.key = "";
-            delete stackedContentItem.$$hashKey;
+        $scope.copyContent = function (evt, idx) {
+            var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
+            item.key = "";
+            delete item.$$hashKey;
 
-            if (validateModel(stackedContentItem)) {
-                window.localStorage.setItem("StackedContentCopy", JSON.stringify(stackedContentItem));
-                notificationsService.success("Stacked Content", "Copied to clipboard.");
+            if (validateModel(item)) {
+                window.localStorage.setItem("InnerContent_CopiedItems", JSON.stringify(item));
+                notificationsService.success("Content", "Content block copied to clipboard.");
                 return;
             } else {
-                notificationsService.error("Stacked Content", "Sorry, something went wrong.");
+                notificationsService.error("Content", "Unfortunately, the content block was not able to be copied.");
             }
-        }
+        };
 
-        $scope.pasteFromLocalStorage = function (evt, idx) {
-            var stackedContentItem = JSON.parse(window.localStorage.getItem("StackedContentCopy"));
-            stackedContentItem.key = innerContentService.generateUid();
-            if (!stackedContentItem) {
-                notificationsService.error("Stacked Content", "You need to copy content first.");
+        $scope.pasteContent = function (evt, idx) {
+            var item = JSON.parse(window.localStorage.getItem("InnerContent_CopiedItems"));
+            item.key = innerContentService.generateUid();
+            if (!item) {
+                notificationsService.error("Content", "Please copy a content block before attempting to paste it.");
                 return;
             }
-            if (validateModel(stackedContentItem)) {
-                $scope.overlayConfig.callback({ model: stackedContentItem, idx: idx, action: "add" });
+            if (validateModel(item)) {
+                $scope.overlayConfig.callback({ model: item, idx: idx, action: "add" });
                 return;
             } else {
-                notificationsService.error("Stacked Content", "Sorry, this content is not allowed here.");
+                notificationsService.error("Content", "Unfortunately, the content block is not allowed to be pasted here.");
             }
-        }
+        };
 
         $scope.sortableOptions = {
             axis: 'y',
