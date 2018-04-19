@@ -77,9 +77,7 @@
                 return;
             }
             if (validateModel(stackedContentItem)) {
-                $scope.overlayConfig.event = evt;
-                $scope.overlayConfig.data = { model: stackedContentItem, idx: idx, action: "add" };
-                $scope.overlayConfig.show = true;
+                $scope.overlayConfig.callback({ model: stackedContentItem, idx: idx, action: "add" });
                 return;
             } else {
                 notificationsService.error("Stacked Content", "Sorry, this content is not allowed here.");
