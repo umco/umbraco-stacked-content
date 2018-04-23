@@ -4,9 +4,10 @@
 
     <div ng-show="inited">
 
-        <a ng-if="!model.value || model.value.length == 0" ng-click="addContent($event, 0)" class="placeholder" title="Add content">
+        <div ng-if="!model.value || model.value.length == 0"ng-click="addContent($event, 0)" class="placeholder"  title="Add content">
             <i class="icon icon-umb-contour"></i>
-        </a>
+            <a ng-click="pasteContent($event, 0)" ng-if="canPaste()" title="Paste content"><i class="icon icon-paste-in"></i></a>
+        </div>
 
         <div ng-if="model.value && model.value.length > 0" class="stack__wrapper">
 
