@@ -14,7 +14,7 @@
         $scope.model.value = $scope.model.value || [];
 
         $scope.canAdd = function () {
-            return (!$scope.model.config.maxItems || $scope.model.config.maxItems === 0 || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode !== "1";
+            return (!$scope.model.config.maxItems || $scope.model.config.maxItems === "0" || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode !== "1";
         };
 
         $scope.canDelete = function () {
