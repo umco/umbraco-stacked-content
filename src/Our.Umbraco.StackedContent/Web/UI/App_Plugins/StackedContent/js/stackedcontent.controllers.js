@@ -3,15 +3,20 @@
     "$scope",
     "editorState",
     "notificationsService",
+    "localStorageService",
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
 
-    function ($scope, editorState, notificationsService, innerContentService, scResources) {
+    function ($scope, editorState, notificationsService, localStorageService, innerContentService, scResources) {
 
         $scope.inited = false;
         $scope.markup = {};
         $scope.prompts = {};
         $scope.model.value = $scope.model.value || [];
+
+        $scope.contentTypeGuids = _.uniq($scope.model.config.contentTypes.map(function (itm) {
+            return itm.icContentTypeGuid;
+        }));
 
         $scope.canAdd = function () {
             return (!$scope.model.config.maxItems || $scope.model.config.maxItems === "0" || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode !== "1";
@@ -22,16 +27,14 @@
         };
 
         $scope.canCopy = function () {
-            try {
-                return !!sessionStorage.getItem;
-            } catch (e) {
-                return false;
-            }
+            // TODO: Move this to InnerContent Service
+            return localStorageService.isSupported;
         };
 
         $scope.canPaste = function () {
-            var item = JSON.parse(window.localStorage.getItem("InnerContent_CopiedItems"));
-            if (item && validateModel(item)) return true;
+            if ($scope.canCopy() && $scope.canAdd()) {
+                return allowPaste;
+            }
             return false;
         };
 
@@ -53,29 +56,30 @@
         };
 
         $scope.copyContent = function (evt, idx) {
-            var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
-            item.key = "";
-            delete item.$$hashKey;
-
-            if (validateModel(item)) {
-                window.localStorage.setItem("InnerContent_CopiedItems", JSON.stringify(item));
-                notificationsService.success("Content", "Content block copied to clipboard.");
-                return;
+            // TODO: Move this to InnerContent Service
+            var item = $scope.model.value[idx];
+            if (item && item.icContentTypeGuid) {
+                localStorageService.set("icContentJson", JSON.stringify(item, function (k, v) {
+                    if (k === "key" || k === "$$hashKey") {
+                        return undefined;
+                    }
+                    return v;
+                }));
+                allowPaste = true;
+                notificationsService.success("Content", "The content block has been copied.");
             } else {
                 notificationsService.error("Content", "Unfortunately, the content block was not able to be copied.");
             }
         };
 
         $scope.pasteContent = function (evt, idx) {
-            var item = JSON.parse(window.localStorage.getItem("InnerContent_CopiedItems"));
+            // TODO: Move this to InnerContent Service
+            var item = JSON.parse(localStorageService.get("icContentJson"));
             item.key = innerContentService.generateUid();
-            if (!item) {
-                notificationsService.error("Content", "Please copy a content block before attempting to paste it.");
-                return;
-            }
-            if (validateModel(item)) {
+
+            if (contentValid(item)) {
                 $scope.overlayConfig.callback({ model: item, idx: idx, action: "add" });
-                return;
+                setDirty();
             } else {
                 notificationsService.error("Content", "Unfortunately, the content block is not allowed to be pasted here.");
             }
@@ -120,15 +124,22 @@
             }
         };
 
-        var validateModel = function (model) {
-            try {
-                if (!model || !model.icContentTypeGuid) return false;
-                if (!$scope.model.config.contentTypes.filter(x => x.icContentTypeGuid === model.icContentTypeGuid).length) return false;
-                return true;
-            } catch (e) {
-                return false;
+        var contentValid = function (itm) {
+            return !!itm && !!itm.icContentTypeGuid && _.contains($scope.contentTypeGuids, itm.icContentTypeGuid);
+        };
+
+        var pasteAllowed = function () {
+            // TODO: Move this to InnerContent Service
+            var json = localStorageService.get("icContentJson");
+            if (json !== null) {
+                var item = JSON.parse(json);
+                return item && contentValid(item);
             }
-        }
+            return false;
+        };
+
+        // Storing the 'canPaste' check in a local variable, so that it doesn't need to be re-eval'd every time
+        var allowPaste = pasteAllowed();
 
         // Set overlay config
         $scope.overlayConfig = {
