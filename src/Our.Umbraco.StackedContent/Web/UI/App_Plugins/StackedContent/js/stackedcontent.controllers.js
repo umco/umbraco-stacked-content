@@ -62,12 +62,8 @@
             // var success = innerContentService.setCopiedContent(item);
             // if (success) {
             if (item && item.icContentTypeGuid) {
-                localStorageService.set("icContentJson", JSON.stringify(item, function (k, v) {
-                    if (k === "key" || k === "$$hashKey") {
-                        return undefined;
-                    }
-                    return v;
-                }));
+                item.key = undefined;
+                localStorageService.set("icContentJson", item);
                 allowPaste = true;
                 notificationsService.success("Content", "The content block has been copied.");
             } else {
@@ -78,7 +74,7 @@
         $scope.pasteContent = function (evt, idx) {
             // TODO: Move this to InnerContent Service
             // var item = innerContentService.getCopiedContent();
-            var item = JSON.parse(localStorageService.get("icContentJson"));
+            var item = localStorageService.get("icContentJson");
             item.key = innerContentService.generateUid();
 
             if (item && contentTypeGuidIsAllowed(item.icContentTypeGuid)) {
@@ -135,9 +131,8 @@
         var pasteAllowed = function () {
             // TODO: Move this to InnerContent Service
             // var guid = innerContentService.getCopiedContentTypeGuid();
-            var json = localStorageService.get("icContentJson");
-            if (json !== null) {
-                var item = JSON.parse(json);
+            var item = localStorageService.get("icContentJson");
+            if (item !== null) {
                 return item && contentTypeGuidIsAllowed(item.icContentTypeGuid);
             }
             return false;
