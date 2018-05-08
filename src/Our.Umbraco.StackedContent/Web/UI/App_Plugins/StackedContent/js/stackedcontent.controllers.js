@@ -28,11 +28,12 @@
 
         $scope.canCopy = function () {
             // TODO: Move this to InnerContent Service
-            return localStorageService.isSupported;
+            return localStorageService.isSupported; // innerContentService.canCopyContent();
         };
 
         $scope.canPaste = function () {
-            if ($scope.canCopy() && $scope.canAdd()) {
+            //if (innerContentService.canPasteContent() && $scope.canAdd()) {
+            if (localStorageService.isSupported && $scope.canAdd()) {
                 return allowPaste;
             }
             return false;
@@ -56,8 +57,10 @@
         };
 
         $scope.copyContent = function (evt, idx) {
-            // TODO: Move this to InnerContent Service
             var item = $scope.model.value[idx];
+            // TODO: Move this to InnerContent Service
+            // var success = innerContentService.setCopiedContent(item);
+            // if (success) {
             if (item && item.icContentTypeGuid) {
                 localStorageService.set("icContentJson", JSON.stringify(item, function (k, v) {
                     if (k === "key" || k === "$$hashKey") {
@@ -74,10 +77,11 @@
 
         $scope.pasteContent = function (evt, idx) {
             // TODO: Move this to InnerContent Service
+            // var item = innerContentService.getCopiedContent();
             var item = JSON.parse(localStorageService.get("icContentJson"));
             item.key = innerContentService.generateUid();
 
-            if (contentValid(item)) {
+            if (item && contentTypeGuidIsAllowed(item.icContentTypeGuid)) {
                 $scope.overlayConfig.callback({ model: item, idx: idx, action: "add" });
                 setDirty();
             } else {
@@ -124,16 +128,17 @@
             }
         };
 
-        var contentValid = function (itm) {
-            return !!itm && !!itm.icContentTypeGuid && _.contains($scope.contentTypeGuids, itm.icContentTypeGuid);
+        var contentTypeGuidIsAllowed = function (guid) {
+            return !!guid && _.contains($scope.contentTypeGuids, guid);
         };
 
         var pasteAllowed = function () {
             // TODO: Move this to InnerContent Service
+            // var guid = innerContentService.getCopiedContentTypeGuid();
             var json = localStorageService.get("icContentJson");
             if (json !== null) {
                 var item = JSON.parse(json);
-                return item && contentValid(item);
+                return item && contentTypeGuidIsAllowed(item.icContentTypeGuid);
             }
             return false;
         };

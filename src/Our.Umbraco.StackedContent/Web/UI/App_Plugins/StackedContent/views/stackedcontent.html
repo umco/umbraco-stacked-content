@@ -4,7 +4,7 @@
 
     <div ng-show="inited">
 
-        <div ng-if="!model.value || model.value.length == 0"ng-click="addContent($event, 0)" class="placeholder"  title="Add content">
+        <div ng-if="!model.value || model.value.length == 0" ng-click="addContent($event, 0)" class="placeholder"  title="Add content">
             <i class="icon icon-umb-contour"></i>
             <a ng-click="pasteContent($event, 0)" ng-if="canPaste()" title="Paste content"><i class="icon icon-paste-in"></i></a>
         </div>
