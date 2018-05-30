@@ -57,7 +57,7 @@
         };
 
         $scope.copyContent = function (evt, idx) {
-            var item = $scope.model.value[idx];
+            var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
             // TODO: Move this to InnerContent Service
             // var success = innerContentService.setCopiedContent(item);
             // if (success) {
