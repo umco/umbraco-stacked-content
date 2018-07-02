@@ -83,6 +83,10 @@
     color: #00aea2;
 }
 
+.stacked-content .placeholder a:hover {
+    text-decoration: none;
+}
+
 .stack__buttons {
     position: absolute;
     right: -12px;
