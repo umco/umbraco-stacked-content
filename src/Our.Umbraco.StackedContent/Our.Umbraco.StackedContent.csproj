@@ -63,6 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PropertyEditors\StackedContentPropertyValueEditor.cs" />
+    <Compile Include="PropertyEditors\StackedContentPreValueEditor.cs" />
     <Compile Include="ValueConverters\StackedContentValueConverter.cs" />
     <Compile Include="Models\UnpublishedContent.cs" />
     <Compile Include="Models\UnpublishedProperty.cs" />
