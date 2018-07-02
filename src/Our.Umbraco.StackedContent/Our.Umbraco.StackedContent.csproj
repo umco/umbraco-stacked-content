@@ -63,7 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\StackedContentValueConverter.cs" />
+    <Compile Include="ValueConverters\StackedContentValueConverter.cs" />
     <Compile Include="Models\UnpublishedContent.cs" />
     <Compile Include="Models\UnpublishedProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
