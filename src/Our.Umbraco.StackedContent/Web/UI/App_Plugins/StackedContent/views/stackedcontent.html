@@ -19,13 +19,13 @@
                         <a ng-click="pasteContent($event, $index)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
                     </div>
                     <div class="stack__preview-wrapper">
-                        <a ng-click="editContent($event, $index, itm)" class="stack__preview stack__preview--default" ng-if="!markup[itm.key]">
+                        <div ng-click="editContent($event, $index, itm)" class="stack__preview stack__preview--default" ng-if="!markup[itm.key]">
                             <i class="icon {{itm.icon}}"></i>
                             <h3>{{itm.name}}</h3>
-                        </a>
-                        <a ng-click="editContent($event, $index, itm)" class="stack__preview" ng-if="markup[itm.key]">
+                        </div>
+                        <div ng-click="editContent($event, $index, itm)" class="stack__preview" ng-if="markup[itm.key]">
                             <div ng-bind-html-unsafe="markup[itm.key]"></div>
-                        </a>
+                        </div>
                         <div class="stack__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
                             <div class="no-overflow">
                                 <a ng-click="copyContent($event, $index)" ng-if="canCopy() && !prompts[itm.key]" class="stack__button" title="Copy"><i class="icon icon-documents"></i></a>

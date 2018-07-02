@@ -203,9 +203,10 @@
 
 .stack__add-bar {
     position: relative;
-    height: 10px;
+    height: 30px;
     z-index: 15;
     text-align: center;
+    margin: -10px 0;
 }
 
 .stack__add-bar .stack__add-button,
@@ -219,12 +220,7 @@
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
 }
 
-.stack__add-bar:hover {
-    margin: -10px 0;
-    height: 30px;
-}
-
-.stack__item:first-child .stack__add-bar--top:hover {
+.stack__item:first-child .stack__add-bar--top {
     margin: 0 0 -10px;
     height: 20px;
 }
