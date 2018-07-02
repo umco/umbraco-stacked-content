@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Our.Umbraco.InnerContent.Helpers;
 using Our.Umbraco.StackedContent.Models;
 using Our.Umbraco.StackedContent.Web.Helpers;
+using Umbraco.Core.Models;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 
@@ -17,12 +18,18 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
         [HttpPost]
         public HttpResponseMessage GetPreviewMarkup([FromBody] JObject item, int pageId)
         {
-            // Get page container node
-            var page = UmbracoContext.ContentCache.GetById(pageId);
-            if (page == null)
+            var page = default(IPublishedContent);
+
+            // If the page is new, then the ID will be zero
+            if (pageId > 0)
             {
-                // If unpublished, then fake PublishedContent (with IContent object)
-                page = new UnpublishedContent(pageId, Services);
+                // Get page container node
+                page = UmbracoContext.ContentCache.GetById(pageId);
+                if (page == null)
+                {
+                    // If unpublished, then fake PublishedContent (with IContent object)
+                    page = new UnpublishedContent(pageId, Services);
+                }
             }
 
             // Convert item
