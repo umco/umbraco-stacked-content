@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build\package.xml = ..\build\package.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{5F00E80B-E36C-4E38-AA70-674B10FCEDBF}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet.config = NuGet.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,5 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{95F00400-1FCA-4D98-9643-ACBC2203C1D0} = {52A49C4D-441F-4D54-A23F-444AF47DB250}
+		{5F00E80B-E36C-4E38-AA70-674B10FCEDBF} = {52A49C4D-441F-4D54-A23F-444AF47DB250}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EB27366-AEDB-4CCA-BA9F-287BD20233E9}
 	EndGlobalSection
 EndGlobal
