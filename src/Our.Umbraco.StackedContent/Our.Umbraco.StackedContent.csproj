@@ -77,8 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web\UI\App_Plugins\StackedContent\css\stackedcontent.css" />
-    <Content Include="Web\UI\App_Plugins\StackedContent\js\stackedcontent.controllers.js" />
-    <Content Include="Web\UI\App_Plugins\StackedContent\js\stackedcontent.resources.js" />
+    <Content Include="Web\UI\App_Plugins\StackedContent\js\stackedcontent.js" />
     <Content Include="Web\UI\App_Plugins\StackedContent\views\stackedcontent.html" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController", [
+﻿// Property Editors
+angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController", [
 
     "$scope",
     "editorState",
@@ -86,11 +87,11 @@
         };
 
         $scope.sortableOptions = {
-            axis: 'y',
+            axis: "y",
             cursor: "move",
             handle: ".stack__preview-wrapper",
             helper: function () {
-                return $('<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>');
+                return $("<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>");
             },
             cursorAt: {
                 top: 0
@@ -222,4 +223,28 @@
         }
     }
 
+]);
+
+// Resources
+angular.module("umbraco.resources").factory("Our.Umbraco.StackedContent.Resources.StackedContentResources", [
+
+    "$q",
+    "$http",
+    "umbRequestHelper",
+
+    function ($q, $http, umbRequestHelper) {
+        return {
+            getPreviewMarkup: function (data, pageId) {
+                return umbRequestHelper.resourcePromise(
+                    $http({
+                        url: "/umbraco/backoffice/StackedContent/StackedContentApi/GetPreviewMarkup",
+                        method: "POST",
+                        params: { pageId: pageId },
+                        data: data
+                    }),
+                    "Failed to retrieve preview markup"
+                );
+            }
+        };
+    }
 ]);
