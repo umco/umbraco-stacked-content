@@ -222,7 +222,7 @@ angular.module("umbraco.resources").factory("Our.Umbraco.StackedContent.Resource
             getPreviewMarkup: function (data, pageId) {
                 return umbRequestHelper.resourcePromise(
                     $http({
-                        url: "/umbraco/backoffice/StackedContent/StackedContentApi/GetPreviewMarkup",
+                        url: umbRequestHelper.convertVirtualToAbsolutePath("~/umbraco/backoffice/StackedContent/StackedContentApi/GetPreviewMarkup"),
                         method: "POST",
                         params: { pageId: pageId },
                         data: data
