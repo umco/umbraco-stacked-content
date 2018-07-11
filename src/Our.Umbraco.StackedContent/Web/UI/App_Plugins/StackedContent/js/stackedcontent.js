@@ -10,6 +10,9 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
 
     function ($scope, editorState, notificationsService, localStorageService, innerContentService, scResources) {
 
+        // Config
+        var previewEnabled = $scope.model.config.enablePreview === "1";
+
         $scope.inited = false;
         $scope.markup = {};
         $scope.prompts = {};
@@ -115,10 +118,6 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
             });
         };
 
-        var previewEnabled = function () {
-            return $scope.model.config.disablePreview !== "1";
-        };
-
         var setDirty = function () {
             if ($scope.propertyForm) {
                 $scope.propertyForm.$setDirty();
@@ -154,7 +153,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
             callback: function (data) {
                 innerContentService.populateName(data.model, data.idx, $scope.model.config.contentTypes);
 
-                if (previewEnabled()) {
+                if (previewEnabled) {
                     scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
                         if (markup) {
                             $scope.markup[data.model.key] = markup;
@@ -193,7 +192,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
                 });
 
                 // Try loading previews
-                if (previewEnabled()) {
+                if (previewEnabled) {
                     loadPreviews();
                 }
             });
@@ -209,7 +208,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
                 $scope.inited = true;
 
                 // Try loading previews
-                if (previewEnabled()) {
+                if (previewEnabled) {
                     loadPreviews();
                 }
 

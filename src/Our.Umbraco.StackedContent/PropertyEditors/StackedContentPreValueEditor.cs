@@ -33,12 +33,32 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
                 },
                 new PreValueField
                 {
-                    Key = "disablePreview",
-                    Name = "Disable Preview",
+                    Key = "enablePreview",
+                    Name = "Enable Preview",
                     View = "boolean",
-                    Description = "Set whether to disable the preview of the items in the stack."
+                    Description = "Select to enable a preview of the items in the stack."
                 }
             });
+        }
+
+        public override IDictionary<string, object> ConvertDbToEditor(IDictionary<string, object> defaultPreVals, PreValueCollection persistedPreVals)
+        {
+            // NOTE: For v1.0, we switched around the default option for the preview feature.
+            // For backwards-compatibility, we check if the legacy "disablePreview" value is available and handle accordingly.
+            if (persistedPreVals.IsDictionaryBased && persistedPreVals.PreValuesAsDictionary.ContainsKey("disablePreview"))
+            {
+                var enablePreview = persistedPreVals.PreValuesAsDictionary["disablePreview"].Value == "1" ? "0" : "1";
+                if (persistedPreVals.PreValuesAsDictionary.ContainsKey("enablePreview"))
+                {
+                    persistedPreVals.PreValuesAsDictionary["enablePreview"].Value = enablePreview;
+                }
+                else
+                {
+                    persistedPreVals.PreValuesAsDictionary.Add("enablePreview", new PreValue(enablePreview));
+                }
+            }
+
+            return base.ConvertDbToEditor(defaultPreVals, persistedPreVals);
         }
     }
 }
