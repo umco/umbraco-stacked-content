@@ -12,6 +12,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
 
         // Config
         var previewEnabled = $scope.model.config.enablePreview === "1";
+        var copyEnabled = $scope.model.config.disableCopy !== "1";
 
         $scope.inited = false;
         $scope.markup = {};
@@ -31,13 +32,11 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
         };
 
         $scope.canCopy = function () {
-            // TODO: Move this to InnerContent Service
-            return localStorageService.isSupported; // innerContentService.canCopyContent();
+            return copyEnabled && innerContentService.canCopyContent();
         };
 
         $scope.canPaste = function () {
-            //if (innerContentService.canPasteContent() && $scope.canAdd()) {
-            if (localStorageService.isSupported && $scope.canAdd()) {
+            if (copyEnabled && innerContentService.canPasteContent() && $scope.canAdd()) {
                 return allowPaste;
             }
             return false;
@@ -62,12 +61,8 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
 
         $scope.copyContent = function (evt, idx) {
             var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
-            // TODO: Move this to InnerContent Service
-            // var success = innerContentService.setCopiedContent(item);
-            // if (success) {
-            if (item && item.icContentTypeGuid) {
-                item.key = undefined;
-                localStorageService.set("icContentJson", item);
+            var success = innerContentService.setCopiedContent(item);
+            if (success) {
                 allowPaste = true;
                 notificationsService.success("Content", "The content block has been copied.");
             } else {
@@ -76,11 +71,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
         };
 
         $scope.pasteContent = function (evt, idx) {
-            // TODO: Move this to InnerContent Service
-            // var item = innerContentService.getCopiedContent();
-            var item = localStorageService.get("icContentJson");
-            item.key = innerContentService.generateUid();
-
+            var item = innerContentService.getCopiedContent();
             if (item && contentTypeGuidIsAllowed(item.icContentTypeGuid)) {
                 $scope.overlayConfig.callback({ model: item, idx: idx, action: "add" });
                 setDirty();
@@ -129,16 +120,11 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
         };
 
         var pasteAllowed = function () {
-            // TODO: Move this to InnerContent Service
-            // var guid = innerContentService.getCopiedContentTypeGuid();
-            var item = localStorageService.get("icContentJson");
-            if (item !== null) {
-                return item && contentTypeGuidIsAllowed(item.icContentTypeGuid);
-            }
-            return false;
+            var guid = innerContentService.getCopiedContentTypeGuid();
+            return guid && contentTypeGuidIsAllowed(guid);
         };
 
-        // Storing the 'canPaste' check in a local variable, so that it doesn't need to be re-eval'd every time
+        // Storing the 'pasteAllowed' check in a local variable, so that it doesn't need to be re-eval'd every time
         var allowPaste = pasteAllowed();
 
         // Set overlay config

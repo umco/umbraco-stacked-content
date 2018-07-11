@@ -1,4 +1,6 @@
-﻿using Our.Umbraco.InnerContent.PropertyEditors;
+﻿using System.Collections.Generic;
+using Our.Umbraco.InnerContent.PropertyEditors;
+using Umbraco.Core.Models;
 using Umbraco.Core.PropertyEditors;
 
 namespace Our.Umbraco.StackedContent.PropertyEditors
@@ -37,6 +39,13 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
                     Name = "Enable Preview",
                     View = "boolean",
                     Description = "Select to enable a preview of the items in the stack."
+                },
+                new PreValueField
+                {
+                    Key = "enableCopy",
+                    Name = "Enable Copy",
+                    View = "boolean",
+                    Description = "Select to enable copying (and pasting) of items in the stack."
                 }
             });
         }

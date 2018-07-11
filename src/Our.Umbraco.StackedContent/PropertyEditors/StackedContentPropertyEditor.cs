@@ -15,7 +15,8 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
         {
             DefaultPreValues.Add("maxItems", 0);
             DefaultPreValues.Add("singleItemMode", "0");
-            DefaultPreValues.Add("disablePreview", "0");
+            DefaultPreValues.Add("enablePreview", "0");
+            DefaultPreValues.Add("enableCopy", "0");
         }
 
         protected override PreValueEditor CreatePreValueEditor()
