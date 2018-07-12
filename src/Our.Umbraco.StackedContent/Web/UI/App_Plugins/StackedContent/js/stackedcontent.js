@@ -4,15 +4,14 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
     "$scope",
     "editorState",
     "notificationsService",
-    "localStorageService",
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
 
-    function ($scope, editorState, notificationsService, localStorageService, innerContentService, scResources) {
+    function ($scope, editorState, notificationsService, innerContentService, scResources) {
 
         // Config
         var previewEnabled = $scope.model.config.enablePreview === "1";
-        var copyEnabled = $scope.model.config.disableCopy !== "1";
+        var copyEnabled = $scope.model.config.enableCopy === "1";
 
         $scope.inited = false;
         $scope.markup = {};
@@ -207,17 +206,15 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
 
         }
     }
-
 ]);
 
 // Resources
 angular.module("umbraco.resources").factory("Our.Umbraco.StackedContent.Resources.StackedContentResources", [
 
-    "$q",
     "$http",
     "umbRequestHelper",
 
-    function ($q, $http, umbRequestHelper) {
+    function ($http, umbRequestHelper) {
         return {
             getPreviewMarkup: function (data, pageId) {
                 return umbRequestHelper.resourcePromise(
