@@ -15,6 +15,7 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
         {
             DefaultPreValues.Add("maxItems", 0);
             DefaultPreValues.Add("singleItemMode", "0");
+            DefaultPreValues.Add("hideLabel", "0");
             DefaultPreValues.Add("enablePreview", "0");
             DefaultPreValues.Add("enableCopy", "0");
         }
@@ -26,7 +27,7 @@ namespace Our.Umbraco.StackedContent.PropertyEditors
 
         protected override PropertyValueEditor CreateValueEditor()
         {
-            return new StackedContentPropertyValueEditor(base.CreateValueEditor());
+            return new SimpleInnerContentPropertyValueEditor(base.CreateValueEditor());
         }
     }
 }
