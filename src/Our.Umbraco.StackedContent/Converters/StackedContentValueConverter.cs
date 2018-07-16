@@ -12,8 +12,7 @@ using Umbraco.Core.PropertyEditors;
 
 namespace Our.Umbraco.StackedContent.Converters
 {
-    [PropertyValueType(typeof(IEnumerable<IPublishedContent>))]
-    public class StackedContentValueConverter : InnerContentValueConverter
+    public class StackedContentValueConverter : InnerContentValueConverter, IPropertyValueConverterMeta
     {
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
@@ -22,18 +21,14 @@ namespace Our.Umbraco.StackedContent.Converters
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
-            if (source == null)
-                return null;
-
-            var str = source.ToString();
-            if (string.IsNullOrWhiteSpace(str))
+            var value = source?.ToString();
+            if (value == null || string.IsNullOrWhiteSpace(value))
                 return null;
 
             try
             {
-                var rawValue = JsonConvert.DeserializeObject<JArray>(str);
-
-                return ConvertInnerContentDataToSource(rawValue, null, 1, preview);
+                var items = JsonConvert.DeserializeObject<JArray>(value);
+                return ConvertInnerContentDataToSource(items, null, 1, preview);
             }
             catch (Exception ex)
             {
@@ -41,6 +36,16 @@ namespace Our.Umbraco.StackedContent.Converters
             }
 
             return null;
+        }
+
+        public Type GetPropertyValueType(PublishedPropertyType propertyType)
+        {
+            return typeof(IEnumerable<IPublishedContent>);
+        }
+
+        public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)
+        {
+            return PropertyCacheLevel.Content;
         }
     }
 }

@@ -1,15 +1,36 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.StackedContent.Web.Helpers
 {
-    internal static class ViewHelper
+    public static class ViewHelper
     {
-        class DummyController : Controller { }
+        private class DummyController : Controller { }
 
-        public static string RenderPartial(string partialName, object model, string[] viewLocations)
+        private static readonly RazorViewEngine ViewEngine = new RazorViewEngine
+        {
+            PartialViewLocationFormats = new[]
+            {
+                "~/Views/Partials/Stack/{0}.cshtml",
+                "~/Views/Partials/Stack/Default.cshtml"
+            }
+        };
+
+        public static void AddViewLocationFormats(params string[] viewLocationFormats)
+        {
+            var newFormats = ViewEngine
+                .PartialViewLocationFormats
+                .Union(viewLocationFormats)
+                .ToArray();
+
+            ViewEngine.PartialViewLocationFormats = newFormats;
+        }
+
+        internal static string RenderPartial(string partialName, object model)
         {
             using (var sw = new StringWriter())
             {
@@ -19,16 +40,11 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
                 routeData.Values.Add("controller", "DummyController");
 
                 var controllerContext = new ControllerContext(new RequestContext(httpContext, routeData), new DummyController());
-
-                var viewEngine = new RazorViewEngine
-                {
-                    PartialViewLocationFormats = viewLocations
-                };
-
-                var viewResult = viewEngine.FindPartialView(controllerContext, partialName, false);
+                
+                var viewResult = ViewEngine.FindPartialView(controllerContext, partialName, false);
                 if (viewResult.View == null)
                 {
-                    // TODO: Log lack of view?
+                    LogHelper.Warn(typeof(ViewHelper), $"No view found for partial '{partialName}'");
                     return null;
                 }
 
