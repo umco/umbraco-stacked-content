@@ -1,16 +1,26 @@
-﻿angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController", [
+﻿// Property Editors
+angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController", [
 
     "$scope",
     "editorState",
+    "notificationsService",
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
 
-    function ($scope, editorState, innerContentService, scResources) {
+    function ($scope, editorState, notificationsService, innerContentService, scResources) {
+
+        // Config
+        var previewEnabled = $scope.model.config.enablePreview === "1";
+        var copyEnabled = $scope.model.config.enableCopy === "1";
 
         $scope.inited = false;
         $scope.markup = {};
         $scope.prompts = {};
         $scope.model.value = $scope.model.value || [];
+
+        $scope.contentTypeGuids = _.uniq($scope.model.config.contentTypes.map(function (itm) {
+            return itm.icContentTypeGuid;
+        }));
 
         $scope.canAdd = function () {
             return (!$scope.model.config.maxItems || $scope.model.config.maxItems === "0" || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode !== "1";
@@ -18,6 +28,17 @@
 
         $scope.canDelete = function () {
             return $scope.model.config.singleItemMode !== "1";
+        };
+
+        $scope.canCopy = function () {
+            return copyEnabled && innerContentService.canCopyContent();
+        };
+
+        $scope.canPaste = function () {
+            if (copyEnabled && innerContentService.canPasteContent() && $scope.canAdd()) {
+                return allowPaste;
+            }
+            return false;
         };
 
         $scope.addContent = function (evt, idx) {
@@ -37,12 +58,33 @@
             setDirty();
         };
 
+        $scope.copyContent = function (evt, idx) {
+            var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
+            var success = innerContentService.setCopiedContent(item);
+            if (success) {
+                allowPaste = true;
+                notificationsService.success("Content", "The content block has been copied.");
+            } else {
+                notificationsService.error("Content", "Unfortunately, the content block was not able to be copied.");
+            }
+        };
+
+        $scope.pasteContent = function (evt, idx) {
+            var item = innerContentService.getCopiedContent();
+            if (item && contentTypeGuidIsAllowed(item.icContentTypeGuid)) {
+                $scope.overlayConfig.callback({ model: item, idx: idx, action: "add" });
+                setDirty();
+            } else {
+                notificationsService.error("Content", "Unfortunately, the content block is not allowed to be pasted here.");
+            }
+        };
+
         $scope.sortableOptions = {
-            axis: 'y',
+            axis: "y",
             cursor: "move",
             handle: ".stack__preview-wrapper",
             helper: function () {
-                return $('<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>');
+                return $("<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>");
             },
             cursorAt: {
                 top: 0
@@ -66,15 +108,23 @@
             });
         };
 
-        var previewEnabled = function () {
-            return $scope.model.config.disablePreview !== "1";
-        };
-
         var setDirty = function () {
             if ($scope.propertyForm) {
                 $scope.propertyForm.$setDirty();
             }
         };
+
+        var contentTypeGuidIsAllowed = function (guid) {
+            return !!guid && _.contains($scope.contentTypeGuids, guid);
+        };
+
+        var pasteAllowed = function () {
+            var guid = innerContentService.getCopiedContentTypeGuid();
+            return guid && contentTypeGuidIsAllowed(guid);
+        };
+
+        // Storing the 'pasteAllowed' check in a local variable, so that it doesn't need to be re-eval'd every time
+        var allowPaste = pasteAllowed();
 
         // Set overlay config
         $scope.overlayConfig = {
@@ -88,7 +138,7 @@
             callback: function (data) {
                 innerContentService.populateName(data.model, data.idx, $scope.model.config.contentTypes);
 
-                if (previewEnabled()) {
+                if (previewEnabled) {
                     scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
                         if (markup) {
                             $scope.markup[data.model.key] = markup;
@@ -127,7 +177,7 @@
                 });
 
                 // Try loading previews
-                if (previewEnabled()) {
+                if (previewEnabled) {
                     loadPreviews();
                 }
             });
@@ -143,7 +193,7 @@
                 $scope.inited = true;
 
                 // Try loading previews
-                if (previewEnabled()) {
+                if (previewEnabled) {
                     loadPreviews();
                 }
 
@@ -156,5 +206,27 @@
 
         }
     }
+]);
 
+// Resources
+angular.module("umbraco.resources").factory("Our.Umbraco.StackedContent.Resources.StackedContentResources", [
+
+    "$http",
+    "umbRequestHelper",
+
+    function ($http, umbRequestHelper) {
+        return {
+            getPreviewMarkup: function (data, pageId) {
+                return umbRequestHelper.resourcePromise(
+                    $http({
+                        url: umbRequestHelper.convertVirtualToAbsolutePath("~/umbraco/backoffice/StackedContent/StackedContentApi/GetPreviewMarkup"),
+                        method: "POST",
+                        params: { pageId: pageId },
+                        data: data
+                    }),
+                    "Failed to retrieve preview markup"
+                );
+            }
+        };
+    }
 ]);
