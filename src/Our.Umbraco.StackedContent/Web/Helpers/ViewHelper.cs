@@ -40,7 +40,7 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
                 routeData.Values.Add("controller", "DummyController");
 
                 var controllerContext = new ControllerContext(new RequestContext(httpContext, routeData), new DummyController());
-                
+
                 var viewResult = ViewEngine.FindPartialView(controllerContext, partialName, false);
                 if (viewResult.View == null)
                 {
