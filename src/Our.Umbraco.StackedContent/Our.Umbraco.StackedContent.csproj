@@ -38,8 +38,8 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Our.Umbraco.InnerContent, Version=2.0.6767.7722, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Our.Umbraco.InnerContent.Core.2.0.0-alpha-000142\lib\net45\Our.Umbraco.InnerContent.dll</HintPath>
+    <Reference Include="Our.Umbraco.InnerContent, Version=2.0.6775.8222, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Our.Umbraco.InnerContent.Core.2.0.0\lib\net45\Our.Umbraco.InnerContent.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
