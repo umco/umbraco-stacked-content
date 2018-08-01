@@ -182,7 +182,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
                 }
             });
 
-        } else if ($scope.model.config.singleItemMode === "1") {
+        } else if (editorState.current.hasOwnProperty("contentTypeAlias") && $scope.model.config.singleItemMode === "1") {
 
             // Initialise single item mode model
             innerContentService.createDefaultDbModel($scope.model.config.contentTypes[0]).then(function (v) {
