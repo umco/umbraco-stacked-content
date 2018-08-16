@@ -22,6 +22,39 @@
     border: 1px solid #f8f8f8;
 }
 
+.stack__preview-toggle {
+    border-bottom: 1px solid #f8f8f8;
+    padding: 10px 15px;
+    display: block;
+}
+
+.stack__preview-toggle:hover {
+    cursor: pointer;
+}
+
+.stack__preview-toggle h4 {
+    display: inline-block;
+    margin: 0;
+}
+
+.stack__preview-toggle h4:after {
+    content: "\e12b";
+    display: inline-block;
+    font-family: icomoon;
+    font-weight: 400;
+    font-style: normal;
+    text-decoration: inherit;
+    -webkit-font-smoothing: antialiased;
+    transform: rotate(90deg);
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.stack__preview--close {
+    max-height: 0;
+    overflow: hidden;
+}
+
 .stacked-content .placeholder,
 .stack__preview {
     display: block;
