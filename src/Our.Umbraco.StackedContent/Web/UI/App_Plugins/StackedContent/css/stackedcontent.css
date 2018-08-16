@@ -28,6 +28,10 @@
     display: block;
 }
 
+.stack__preview-toggle.active h4:after {
+    transform:  rotate(-90deg);
+}
+
 .stack__preview-toggle:hover {
     cursor: pointer;
 }

@@ -23,7 +23,7 @@
                             <i class="icon {{itm.icon}}"></i>
                             <h3>{{itm.name}}</h3>
                         </div>
-                        <div class="stack__preview-toggle" ng-click="toggleContent($event, itm)" ng-if="markup[itm.key]">
+                        <div class="stack__preview-toggle" ng-class="{ 'active': itm.isClosed }" ng-click="toggleContent($event, itm)" ng-if="markup[itm.key]">
                             <h4>{{itm.name}}</h4>
                         </div>
                         <div ng-click="editContent($event, $index, itm)" class="stack__preview" ng-if="markup[itm.key]">
