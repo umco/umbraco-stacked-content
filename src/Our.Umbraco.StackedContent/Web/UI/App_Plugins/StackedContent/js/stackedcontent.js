@@ -58,6 +58,10 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
             setDirty();
         };
 
+        $scope.toggleContent = function (evt, itm) {
+            itm.isClosed = !itm.isClosed
+        }
+
         $scope.copyContent = function (evt, idx) {
             var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
             var success = innerContentService.setCopiedContent(item);
