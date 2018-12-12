@@ -26,13 +26,9 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
             // If the page is new, then the ID will be zero
             if (pageId > 0)
             {
-                // Get page container node
-                page = UmbracoContext.ContentCache.GetById(pageId);
-                if (page == null)
-                {
-                    // If unpublished, then fake PublishedContent (with IContent object)
-                    page = new UnpublishedContent(pageId, Services);
-                }
+                // TODO: Review. Previewing multiple blocks on the same page will make subsequent calls to the ContentService. Is it cacheable? [LK:2018-12-12]
+                // Get page container node, otherwise it's unpublished then fake PublishedContent (by IContent object)
+                page = UmbracoContext.ContentCache.GetById(pageId) ?? new UnpublishedContent(pageId, Services);
 
                 // Ensure PublishedContentRequest exists, just in case there are any RTE Macros to render
                 if (UmbracoContext.PublishedContentRequest == null)
