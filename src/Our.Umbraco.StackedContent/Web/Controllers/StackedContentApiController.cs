@@ -2,15 +2,13 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Web;
 using System.Web.Http;
-using System.Web.Security;
 using Newtonsoft.Json.Linq;
 using Our.Umbraco.InnerContent.Helpers;
 using Our.Umbraco.StackedContent.Models;
 using Our.Umbraco.StackedContent.Web.Helpers;
-using Umbraco.Core.Configuration;
 using Umbraco.Core.Models;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.Routing;
 using Umbraco.Web.WebApi;
@@ -36,21 +34,17 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
                     page = new UnpublishedContent(pageId, Services);
                 }
 
-                var baseUrl = HttpContext.Current.Request.Url.AbsoluteUri.Replace(HttpContext.Current.Request.Path, "/");
-                var umbUrl = baseUrl + page.Url.TrimStart('/');
+                // Ensure PublishedContentRequest exists, just in case there are any RTE Macros to render
+                if (UmbracoContext.PublishedContentRequest == null)
+                {
+#pragma warning disable CS0618 // Type or member is obsolete
+                    var pcr = new PublishedContentRequest(new Uri(page.UrlAbsolute()), UmbracoContext.RoutingContext);
+#pragma warning restore CS0618 // Type or member is obsolete
 
-                var pcr = new PublishedContentRequest(
-                    new Uri(umbUrl),
-                    UmbracoContext.RoutingContext,
-                    UmbracoConfig.For.UmbracoSettings().WebRouting,
-                    s => Roles.Provider.GetRolesForUser(s)
-                );
-
-                UmbracoContext.PublishedContentRequest = pcr;
-                UmbracoContext.PublishedContentRequest.PublishedContent = page;
-
-                pcr.Prepare();
-
+                    UmbracoContext.PublishedContentRequest = pcr;
+                    UmbracoContext.PublishedContentRequest.PublishedContent = page;
+                    UmbracoContext.PublishedContentRequest.Prepare();
+                }
             }
 
             // Convert item
