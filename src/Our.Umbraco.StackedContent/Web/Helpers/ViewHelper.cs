@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -19,6 +20,9 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
                 "~/Views/Partials/Stack/Default.cshtml"
             }
         };
+
+        // NOTE: So not to flood the logs with repeat warnings, the missing partial-views are kept track of.
+        private static readonly HashSet<string> MissingPartialViews = new HashSet<string>();
 
         public static void AddViewLocationFormats(params string[] viewLocationFormats)
         {
@@ -42,9 +46,10 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
                 var controllerContext = new ControllerContext(new RequestContext(httpContext, routeData), new DummyController());
 
                 var viewResult = ViewEngine.FindPartialView(controllerContext, partialName, false);
-                if (viewResult.View == null)
+                if (viewResult.View == null && MissingPartialViews.Contains(partialName) == false)
                 {
                     LogHelper.Warn(typeof(ViewHelper), $"No view found for partial '{partialName}'");
+                    MissingPartialViews.Add(partialName);
                     return null;
                 }
 
