@@ -46,7 +46,7 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
             // TODO: Review. The values in `item` are the "editor values", whereas for prevalue-based editors, the converter is expecting the "database value". [LK:2018-12-12]
 
             // Convert item
-            var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, page, preview: true);
+            var content = InnerContentHelper.ConvertInnerContentToPublishedContent(item, page);
 
             // Construct preview model
             var model = new PreviewModel { Page = page, Item = content };
