@@ -130,6 +130,7 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
         $scope.overlayConfig = {
             propertyAlias: $scope.model.alias,
             contentTypes: $scope.model.config.contentTypes,
+            enableFilter: $scope.model.config.enableFilter,
             show: false,
             data: {
                 idx: 0,
