@@ -5,21 +5,18 @@ using Newtonsoft.Json.Linq;
 using Our.Umbraco.InnerContent.ValueConverters;
 using Our.Umbraco.StackedContent.PropertyEditors;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 
 namespace Our.Umbraco.StackedContent.ValueConverters
 {
-    public class StackedContentValueConverter : InnerContentValueConverter, IPropertyValueConverterMeta
+    public class StackedContentValueConverter : InnerContentValueConverter
     {
-        public override bool IsConverter(PublishedPropertyType propertyType)
-        {
-            return propertyType.PropertyEditorAlias.InvariantEquals(StackedContentPropertyEditor.PropertyEditorAlias);
-        }
+        public override bool IsConverter(IPublishedPropertyType propertyType) => propertyType.EditorAlias.InvariantEquals(StackedContentDataEditor.DataEditorAlias);
 
-        public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
+        public override object ConvertSourceToIntermediate(IPublishedElement owner, IPublishedPropertyType propertyType, object source, bool preview)
         {
             var value = source?.ToString();
             if (value == null || string.IsNullOrWhiteSpace(value))
@@ -28,24 +25,18 @@ namespace Our.Umbraco.StackedContent.ValueConverters
             try
             {
                 var items = JsonConvert.DeserializeObject<JArray>(value);
-                return ConvertInnerContentDataToSource(items, null, 1, preview);
+                return ConvertInnerContentDataToSource(items, preview);
             }
             catch (Exception ex)
             {
-                LogHelper.Error<StackedContentValueConverter>("Error converting value", ex);
+                Current.Logger.Error<StackedContentValueConverter>("Error converting value", ex);
             }
 
             return null;
         }
 
-        public Type GetPropertyValueType(PublishedPropertyType propertyType)
-        {
-            return typeof(IEnumerable<IPublishedContent>);
-        }
+        public override Type GetPropertyValueType(IPublishedPropertyType propertyType) => typeof(IEnumerable<IPublishedElement>);
 
-        public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)
-        {
-            return PropertyCacheLevel.Content;
-        }
+        public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) => PropertyCacheLevel.Elements;
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.StackedContent.Web.Helpers
@@ -48,7 +49,7 @@ namespace Our.Umbraco.StackedContent.Web.Helpers
                 var viewResult = ViewEngine.FindPartialView(controllerContext, partialName, false);
                 if (viewResult.View == null && MissingPartialViews.Contains(partialName) == false)
                 {
-                    LogHelper.Warn(typeof(ViewHelper), $"No view found for partial '{partialName}'");
+                    Current.Logger.Warn(typeof(ViewHelper), $"No view found for partial '{partialName}'");
                     MissingPartialViews.Add(partialName);
                     return null;
                 }

@@ -9,6 +9,8 @@ angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.Sta
 
     function ($scope, editorState, notificationsService, innerContentService, scResources) {
 
+        console.log("stackedcontent", $scope.model);
+
         // Config
         var previewEnabled = $scope.model.config.enablePreview === "1";
         var copyEnabled = $scope.model.config.enableCopy === "1";
