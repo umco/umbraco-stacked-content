@@ -33,8 +33,17 @@ namespace Our.Umbraco.StackedContent.Web.Controllers
                 // Ensure PublishedContentRequest exists, just in case there are any RTE Macros to render
                 if (UmbracoContext.PublishedContentRequest == null)
                 {
+                    var pageUrl = page.UrlAbsolute();
+
+                    // If the page is unpublished, then the URL will be empty or a hash '#'.
+                    // Use the current request as a fallback, as we need to give the PublishedContentRequest a URI.
+                    if (string.IsNullOrEmpty(pageUrl) || pageUrl.Equals("#"))
+                    {
+                        pageUrl = string.Concat(Request.RequestUri.GetLeftPart(UriPartial.Authority), "/#", pageId);
+                    }
+
 #pragma warning disable CS0618 // Type or member is obsolete
-                    var pcr = new PublishedContentRequest(new Uri(page.UrlAbsolute()), UmbracoContext.RoutingContext);
+                    var pcr = new PublishedContentRequest(new Uri(pageUrl), UmbracoContext.RoutingContext);
 #pragma warning restore CS0618 // Type or member is obsolete
 
                     UmbracoContext.PublishedContentRequest = pcr;
