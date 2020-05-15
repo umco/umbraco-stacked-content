@@ -43,7 +43,7 @@
 .stacked-content .placeholder:active,
 .stack__preview--default:hover,
 .stack__preview--default:active {
-    background-color: #f5f5f5;
+    background-color: #f3f3f5;
 }
 
 .stacked-content .placeholder .icon,
@@ -177,11 +177,7 @@
 
 .stack__buttons .umb_confirm-action__overlay-action.-confirm:hover {
     background-color: #2ecc71;
-    -webkit-border-top-right-radius: 0;
-    -moz-border-top-right-radius: 0;
     border-top-right-radius: 0;
-    -webkit-border-bottom-right-radius: 0;
-    -moz-border-bottom-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 

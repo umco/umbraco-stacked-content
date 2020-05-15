@@ -1,40 +1,44 @@
-﻿<div class="stacked-content" ng-controller="Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController">
+﻿<div class="stacked-content" ng-controller="Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController as vm">
 
-    <umb-load-indicator ng-show="!inited"></umb-load-indicator>
+    <umb-load-indicator ng-show="!vm.inited"></umb-load-indicator>
 
-    <div ng-show="inited">
+    <div ng-show="vm.inited">
 
-        <div ng-if="!model.value || model.value.length == 0" ng-click="addContent($event, 0)" class="placeholder"  title="Add content">
+        <div ng-if="!model.value || model.value.length == 0" ng-click="vm.addContent(0)" class="placeholder" title="Add content">
             <i class="icon icon-umb-contour"></i>
-            <a ng-click="pasteContent($event, 0)" ng-if="canPaste()" title="Paste content"><i class="icon icon-paste-in"></i></a>
+            <a ng-click="vm.pasteContent(0)" ng-if="vm.canPaste()" title="Paste content"><i class="icon icon-paste-in"></i></a>
         </div>
 
         <div ng-if="model.value && model.value.length > 0" class="stack__wrapper">
 
-            <div class="stack" ui-sortable="sortableOptions" ng-model="model.value">
+            <div class="stack" ui-sortable="vm.sortableOptions" ng-model="model.value">
 
-                <div class="stack__item" ng-repeat="itm in model.value">
-                    <div class="stack__add-bar stack__add-bar--top" ng-if="model.config.singleItemMode !== '1'">
-                        <a ng-click="addContent($event, $index)" class="stack__add-button" ng-if="canAdd()" title="Add"><i class="icon icon-add"></i></a>
-                        <a ng-click="pasteContent($event, $index)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
+                <div class="stack__item" ng-repeat="item in model.value">
+                    <div class="stack__add-bar stack__add-bar--top" ng-if="vm.singleItemMode === false">
+                        <a ng-click="vm.pasteContent($index)" class="stack__paste-button" ng-if="vm.canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
+                        <a ng-click="vm.addContent($index)" class="stack__add-button" ng-if="vm.canAdd()" title="Add">
+                            <i class="icon icon-add"></i>
+                        </a>
                     </div>
                     <div class="stack__preview-wrapper">
-                        <div ng-click="editContent($event, $index, itm)" class="stack__preview stack__preview--default" ng-if="!markup[itm.key]">
-                            <i class="icon {{itm.icon}}"></i>
-                            <h3>{{itm.name}}</h3>
+                        <div ng-click="vm.editContent($index, item)" class="stack__preview stack__preview--default" ng-if="!vm.markup[item.key]">
+                            <i class="icon" ng-class="item.icon"></i>
+                            <h3 ng-bind="item.name"></h3>
                         </div>
-                        <div ng-click="editContent($event, $index, itm)" class="stack__preview" ng-if="markup[itm.key]">
-                            <div ng-bind-html-unsafe="markup[itm.key]"></div>
+                        <div ng-click="vm.editContent($index, item)" class="stack__preview" ng-if="vm.markup[item.key]">
+                            <div ng-bind-html-unsafe="vm.markup[item.key]"></div>
                         </div>
-                        <div class="stack__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
+                        <div class="stack__buttons" ng-if="vm.canDelete()" ng-mousedown="$event.stopPropagation();">
                             <div class="no-overflow">
-                                <a ng-click="copyContent($event, $index)" ng-if="canCopy() && !prompts[itm.key]" class="stack__button" title="Copy"><i class="icon icon-documents"></i></a>
-                                <umb-confirm-action ng-if="prompts[itm.key]"
+                                <a ng-click="vm.copyContent($index)" ng-if="vm.canCopy() && !vm.prompts[item.key]" class="stack__button" title="Copy">
+                                    <i class="icon icon-documents"></i>
+                                </a>
+                                <umb-confirm-action ng-if="vm.prompts[item.key]"
                                                     direction="left"
-                                                    on-confirm="deleteContent($event, $index)"
-                                                    on-cancel="prompts[itm.key] = false">
+                                                    on-confirm="vm.deleteContent($index)"
+                                                    on-cancel="vm.prompts[item.key] = false">
                                 </umb-confirm-action>
-                                <a ng-click="prompts[itm.key] = true" class="stack__button" title="Delete"><i class="icon icon-trash"></i></a>
+                                <a ng-click="vm.prompts[item.key] = true" class="stack__button" title="Delete"><i class="icon icon-trash"></i></a>
                             </div>
                         </div>
                     </div>
@@ -42,15 +46,17 @@
 
             </div>
 
-            <div class="stack__add-bar stack__add-bar--bottom" ng-if="model.config.singleItemMode !== '1'">
-                <a ng-click="addContent($event, model.value.length)" class="stack__add-button" ng-if="canAdd()" title="Add"><i class="icon icon-add"></i></a>
-                <a ng-click="pasteContent($event, model.value.length)" class="stack__paste-button" ng-if="canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
+            <div class="stack__add-bar stack__add-bar--bottom" ng-if="vm.singleItemMode === false">
+                <a ng-click="vm.pasteContent(model.value.length)" class="stack__paste-button" ng-if="vm.canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
+                <a ng-click="vm.addContent(model.value.length)" class="stack__add-button" ng-if="vm.canAdd()" title="Add">
+                    <i class="icon icon-add"></i>
+                </a>
             </div>
 
         </div>
 
-        <inner-content-overlay ng-if="overlayConfig.show"
-                               config="overlayConfig">
+        <inner-content-overlay ng-if="vm.overlayConfig.show"
+                               config="vm.overlayConfig">
         </inner-content-overlay>
 
     </div>

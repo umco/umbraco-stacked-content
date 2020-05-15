@@ -1,220 +1,248 @@
-﻿// Property Editors
-angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController", [
-
+﻿angular.module("umbraco").controller("Our.Umbraco.StackedContent.Controllers.StackedContentPropertyEditorController", [
     "$scope",
     "editorState",
     "notificationsService",
     "innerContentService",
     "Our.Umbraco.StackedContent.Resources.StackedContentResources",
-
     function ($scope, editorState, notificationsService, innerContentService, scResources) {
 
-        // Config
-        var previewEnabled = $scope.model.config.enablePreview === "1";
-        var copyEnabled = $scope.model.config.enableCopy === "1";
+        var defaultConfig = {
+            contentTypes: [],
+            enableCopy: 1,
+            enableFilter: 0,
+            enablePreview: 0,
+            singleItemMode: 0,
+        };
+        var config = Object.assign({}, defaultConfig, $scope.model.config);
 
-        $scope.inited = false;
-        $scope.markup = {};
-        $scope.prompts = {};
-        $scope.model.value = $scope.model.value || [];
+        var vm = this;
 
-        $scope.contentTypeGuids = _.uniq($scope.model.config.contentTypes.map(function (itm) {
-            return itm.icContentTypeGuid;
-        }));
+        function init() {
 
-        $scope.canAdd = function () {
-            return (!$scope.model.config.maxItems || $scope.model.config.maxItems === "0" || $scope.model.value.length < $scope.model.config.maxItems) && $scope.model.config.singleItemMode !== "1";
+            config.previewEnabled = config.enablePreview === "1" || config.enablePreview === 1;
+            config.copyEnabled = config.enableCopy === "1" || config.enableCopy === 1;
+
+            config.contentTypeGuids = _.uniq(config.contentTypes.map(function (x) {
+                return x.icContentTypeGuid;
+            }));
+
+            // Storing the 'pasteAllowed' check against a config property, so that it doesn't need to be re-eval'd every time
+            config.allowPaste = pasteAllowed();
+
+            vm.inited = false;
+            vm.markup = {};
+            vm.prompts = {};
+
+            vm.singleItemMode = config.singleItemMode === "1" || config.singleItemMode === 1;
+
+            $scope.model.value = $scope.model.value || [];
+
+            if ($scope.model.value === "") {
+                $scope.model.value = [];
+            }
+
+            if (Array.isArray($scope.model.value) === false) {
+                $scope.model.value = [$scope.model.value];
+            }
+
+            vm.sortableOptions = {
+                axis: "y",
+                cursor: "move",
+                handle: ".stack__preview-wrapper",
+                helper: function () {
+                    return $("<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>");
+                },
+                cursorAt: {
+                    top: 0
+                },
+                stop: function (e, ui) {
+                    $scope.model.value.forEach(function (x, idx) {
+                        innerContentService.populateName(x, idx, config.contentTypes);
+                    });
+                    setDirty();
+                }
+            };
+
+            // Set overlay config
+            vm.overlayConfig = {
+                propertyAlias: $scope.model.alias,
+                contentTypes: config.contentTypes,
+                enableFilter: config.enableFilter === "1" || config.enableFilter === 1,
+                show: false,
+                data: {
+                    idx: 0,
+                    model: null
+                },
+                callback: function (data) {
+                    innerContentService.populateName(data.model, data.idx, config.contentTypes);
+
+                    if (config.previewEnabled) {
+                        scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
+                            if (markup) {
+                                vm.markup[data.model.key] = markup;
+                            }
+                        });
+                    }
+
+                    if (($scope.model.value instanceof Array) === false) {
+                        $scope.model.value = [];
+                    }
+
+                    if (data.action === "add") {
+                        $scope.model.value.splice(data.idx, 0, data.model);
+                    } else if (data.action === "edit") {
+                        $scope.model.value[data.idx] = data.model;
+                    }
+                }
+            };
+
+            vm.canAdd = canAdd;
+            vm.canCopy = canCopy;
+            vm.canDelete = canDelete;
+            vm.canPaste = canPaste;
+
+            vm.addContent = addContent;
+            vm.copyContent = copyContent;
+            vm.deleteContent = deleteContent;
+            vm.editContent = editContent;
+            vm.pasteContent = pasteContent;
+
+            if ($scope.model.value.length > 0) {
+
+                // Model is ready so set inited
+                vm.inited = true;
+
+                // Sync icons incase it's changes on the doctype
+                var guids = _.uniq($scope.model.value.map(function (x) {
+                    return x.icContentTypeGuid;
+                }));
+
+                innerContentService.getContentTypeIconsByGuid(guids).then(function (data) {
+                    _.each($scope.model.value, function (x) {
+                        if (data.hasOwnProperty(x.icContentTypeGuid)) {
+                            x.icon = data[x.icContentTypeGuid];
+                        }
+                    });
+
+                    // Try loading previews
+                    if (config.previewEnabled) {
+                        loadPreviews();
+                    }
+                });
+
+            } else if (editorState.current.hasOwnProperty("contentTypeAlias") && vm.singleItemMode === true) {
+
+                // Initialise single item mode model
+                innerContentService.createDefaultDbModel(config.contentTypes[0]).then(function (v) {
+
+                    $scope.model.value = [v];
+
+                    // Model is ready so set inited
+                    vm.inited = true;
+
+                    // Try loading previews
+                    if (config.previewEnabled) {
+                        loadPreviews();
+                    }
+
+                });
+
+            } else {
+
+                // Model is ready so set inited
+                vm.inited = true;
+
+            }
+
         };
 
-        $scope.canDelete = function () {
-            return $scope.model.config.singleItemMode !== "1";
+        function canAdd() {
+            return (!config.maxItems || config.maxItems === "0" || $scope.model.value.length < config.maxItems) && vm.singleItemMode === false;
         };
 
-        $scope.canCopy = function () {
-            return copyEnabled && innerContentService.canCopyContent();
+        function canDelete() {
+            return vm.singleItemMode === false;
         };
 
-        $scope.canPaste = function () {
-            if (copyEnabled && innerContentService.canPasteContent() && $scope.canAdd()) {
-                return allowPaste;
+        function canCopy() {
+            return config.copyEnabled && innerContentService.canCopyContent();
+        };
+
+        function canPaste() {
+            if (config.copyEnabled && innerContentService.canPasteContent() && canAdd()) {
+                return config.allowPaste;
             }
             return false;
         };
 
-        $scope.addContent = function (evt, idx) {
-            $scope.overlayConfig.event = evt;
-            $scope.overlayConfig.data = { model: null, idx: idx, action: "add" };
-            $scope.overlayConfig.show = true;
+        function addContent(idx) {
+            vm.overlayConfig.data = { model: null, idx: idx, action: "add" };
+            vm.overlayConfig.show = true;
         };
 
-        $scope.editContent = function (evt, idx, itm) {
-            $scope.overlayConfig.event = evt;
-            $scope.overlayConfig.data = { model: itm, idx: idx, action: "edit" };
-            $scope.overlayConfig.show = true;
+        function editContent(idx, itm) {
+            vm.overlayConfig.data = { model: itm, idx: idx, action: "edit" };
+            vm.overlayConfig.show = true;
         };
 
-        $scope.deleteContent = function (evt, idx) {
+        function deleteContent(idx) {
             $scope.model.value.splice(idx, 1);
             setDirty();
         };
 
-        $scope.copyContent = function (evt, idx) {
-            var item = JSON.parse(JSON.stringify($scope.model.value[idx]));
+        function copyContent(idx) {
+            var item = Object.assign({}, $scope.model.value[idx]);
             var success = innerContentService.setCopiedContent(item);
             if (success) {
-                allowPaste = true;
+                config.allowPaste = true;
                 notificationsService.success("Content", "The content block has been copied.");
             } else {
                 notificationsService.error("Content", "Unfortunately, the content block was not able to be copied.");
             }
         };
 
-        $scope.pasteContent = function (evt, idx) {
+        function pasteContent(idx) {
             var item = innerContentService.getCopiedContent();
             if (item && contentTypeGuidIsAllowed(item.icContentTypeGuid)) {
-                $scope.overlayConfig.callback({ model: item, idx: idx, action: "add" });
+                vm.overlayConfig.callback({ model: item, idx: idx, action: "add" });
                 setDirty();
             } else {
                 notificationsService.error("Content", "Unfortunately, the content block is not allowed to be pasted here.");
             }
         };
 
-        $scope.sortableOptions = {
-            axis: "y",
-            cursor: "move",
-            handle: ".stack__preview-wrapper",
-            helper: function () {
-                return $("<div class=\"stack__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>");
-            },
-            cursorAt: {
-                top: 0
-            },
-            stop: function (e, ui) {
-                _.each($scope.model.value, function (itm, idx) {
-                    innerContentService.populateName(itm, idx, $scope.model.config.contentTypes);
-                });
-                setDirty();
-            }
-        };
-
-        // Helpers
-        var loadPreviews = function () {
-            _.each($scope.model.value, function (itm) {
-                scResources.getPreviewMarkup(itm, editorState.current.id).then(function (markup) {
+        function loadPreviews() {
+            $scope.model.value.forEach(function (x) {
+                scResources.getPreviewMarkup(x, editorState.current.id).then(function (markup) {
                     if (markup) {
-                        $scope.markup[itm.key] = markup;
+                        vm.markup[x.key] = markup;
                     }
                 });
             });
         };
 
-        var setDirty = function () {
+        function setDirty() {
             if ($scope.propertyForm) {
                 $scope.propertyForm.$setDirty();
             }
         };
 
-        var contentTypeGuidIsAllowed = function (guid) {
-            return !!guid && _.contains($scope.contentTypeGuids, guid);
+        function contentTypeGuidIsAllowed(guid) {
+            return !!guid && _.contains(config.contentTypeGuids, guid);
         };
 
-        var pasteAllowed = function () {
+        function pasteAllowed() {
             var guid = innerContentService.getCopiedContentTypeGuid();
             return guid && contentTypeGuidIsAllowed(guid);
         };
 
-        // Storing the 'pasteAllowed' check in a local variable, so that it doesn't need to be re-eval'd every time
-        var allowPaste = pasteAllowed();
-
-        // Set overlay config
-        $scope.overlayConfig = {
-            propertyAlias: $scope.model.alias,
-            contentTypes: $scope.model.config.contentTypes,
-            enableFilter: $scope.model.config.enableFilter,
-            show: false,
-            data: {
-                idx: 0,
-                model: null
-            },
-            callback: function (data) {
-                innerContentService.populateName(data.model, data.idx, $scope.model.config.contentTypes);
-
-                if (previewEnabled) {
-                    scResources.getPreviewMarkup(data.model, editorState.current.id).then(function (markup) {
-                        if (markup) {
-                            $scope.markup[data.model.key] = markup;
-                        }
-                    });
-                }
-
-                if (!($scope.model.value instanceof Array)) {
-                    $scope.model.value = [];
-                }
-
-                if (data.action === "add") {
-                    $scope.model.value.splice(data.idx, 0, data.model);
-                } else if (data.action === "edit") {
-                    $scope.model.value[data.idx] = data.model;
-                }
-            }
-        };
-
-        // Initialize value
-        if ($scope.model.value.length > 0) {
-
-            // Model is ready so set inited
-            $scope.inited = true;
-
-            // Sync icons incase it's changes on the doctype
-            var guids = _.uniq($scope.model.value.map(function (itm) {
-                return itm.icContentTypeGuid;
-            }));
-
-            innerContentService.getContentTypeIconsByGuid(guids).then(function (data) {
-                _.each($scope.model.value, function (itm) {
-                    if (data.hasOwnProperty(itm.icContentTypeGuid)) {
-                        itm.icon = data[itm.icContentTypeGuid];
-                    }
-                });
-
-                // Try loading previews
-                if (previewEnabled) {
-                    loadPreviews();
-                }
-            });
-
-        } else if (editorState.current.hasOwnProperty("contentTypeAlias") && $scope.model.config.singleItemMode === "1") {
-
-            // Initialise single item mode model
-            innerContentService.createDefaultDbModel($scope.model.config.contentTypes[0]).then(function (v) {
-
-                $scope.model.value = [v];
-
-                // Model is ready so set inited
-                $scope.inited = true;
-
-                // Try loading previews
-                if (previewEnabled) {
-                    loadPreviews();
-                }
-
-            });
-
-        } else {
-
-            // Model is ready so set inited
-            $scope.inited = true;
-
-        }
+        init();
     }
 ]);
 
-// Resources
 angular.module("umbraco.resources").factory("Our.Umbraco.StackedContent.Resources.StackedContentResources", [
-
     "$http",
     "umbRequestHelper",
-
     function ($http, umbRequestHelper) {
         return {
             getPreviewMarkup: function (data, pageId) {
