@@ -86,13 +86,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF %25ComputerName%25 == DESKTOP-ESFKU58 (
-  IF NOT "$(SolutionDir)" == "*Undefined*" (
-    xcopy /s /y "$(TargetPath)" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\bin\"
-    xcopy /s /y "$(TargetDir)$(ProjectName).pdb" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\bin\"
-    xcopy /s /y "$(ProjectDir)Web\UI\*.*" "C:\Users\Matt\Storage\Sandbox\Umbraco\UmbracoCms.7.7.6\"
-  )
-)</PostBuildEvent>
+    <PostBuildEvent></PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
