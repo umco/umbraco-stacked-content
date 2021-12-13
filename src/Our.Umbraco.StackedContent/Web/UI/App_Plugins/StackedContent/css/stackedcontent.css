@@ -148,7 +148,6 @@
 
 .stack__button,
 .stack__add-button,
-.stack__paste-button,
 .stack__buttons .umb_confirm-action__overlay-action {
     display: inline-block;
     background-color: #625a74;
@@ -168,7 +167,6 @@
 
 .stack__button:hover,
 .stack__add-button:hover,
-.stack__paste-button:hover,
 .stack__buttons .umb_confirm-action__overlay-action.-cancel:hover,
 .stack__buttons .umb_confirm-action__overlay-action.-confirm:hover {
     color: white !important;
@@ -188,8 +186,7 @@
     border-radius: 0;
 }
 
-.stack__add-button,
-.stack__paste-button {
+.stack__add-button {
     background-color: #00aea2;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
@@ -205,8 +202,7 @@
     margin: -10px 0;
 }
 
-.stack__add-bar .stack__add-button,
-.stack__add-bar .stack__paste-button {
+.stack__add-bar .stack__add-button {
     opacity: 0;
     transition: opacity .0s ease-in-out;
     -moz-transition: opacity .0s ease-in-out;
@@ -221,8 +217,7 @@
     height: 20px;
 }
 
-.stack__add-bar:hover .stack__add-button,
-.stack__add-bar:hover .stack__paste-button {
+.stack__add-bar:hover .stack__add-button {
     opacity: 1;
     transition-duration: .25s;
     -moz-transition-duration: .25s;

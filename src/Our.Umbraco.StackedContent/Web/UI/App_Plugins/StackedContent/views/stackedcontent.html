@@ -6,7 +6,6 @@
 
         <div ng-if="!model.value || model.value.length == 0" ng-click="vm.addContent(0)" class="placeholder" title="Add content">
             <i class="icon icon-umb-contour"></i>
-            <a ng-click="vm.pasteContent(0)" ng-if="vm.canPaste()" title="Paste content"><i class="icon icon-paste-in"></i></a>
         </div>
 
         <div ng-if="model.value && model.value.length > 0" class="stack__wrapper">
@@ -15,7 +14,6 @@
 
                 <div class="stack__item" ng-repeat="item in model.value">
                     <div class="stack__add-bar stack__add-bar--top" ng-if="vm.singleItemMode === false">
-                        <a ng-click="vm.pasteContent($index)" class="stack__paste-button" ng-if="vm.canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
                         <a ng-click="vm.addContent($index)" class="stack__add-button" ng-if="vm.canAdd()" title="Add">
                             <i class="icon icon-add"></i>
                         </a>
@@ -47,7 +45,6 @@
             </div>
 
             <div class="stack__add-bar stack__add-bar--bottom" ng-if="vm.singleItemMode === false">
-                <a ng-click="vm.pasteContent(model.value.length)" class="stack__paste-button" ng-if="vm.canPaste()" title="Paste"><i class="icon icon-paste-in"></i></a>
                 <a ng-click="vm.addContent(model.value.length)" class="stack__add-button" ng-if="vm.canAdd()" title="Add">
                     <i class="icon icon-add"></i>
                 </a>

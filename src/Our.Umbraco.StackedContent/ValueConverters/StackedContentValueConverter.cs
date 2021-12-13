@@ -28,7 +28,7 @@ namespace Our.Umbraco.StackedContent.ValueConverters
             try
             {
                 var items = JsonConvert.DeserializeObject<JArray>(value);
-                return ConvertInnerContentDataToSource(items, null, 1, preview);
+                return base.ConvertInnerContentDataToSource(items, null, 1, preview);
             }
             catch (Exception ex)
             {

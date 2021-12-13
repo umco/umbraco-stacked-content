@@ -22,13 +22,6 @@
             config.previewEnabled = config.enablePreview === "1" || config.enablePreview === 1;
             config.copyEnabled = config.enableCopy === "1" || config.enableCopy === 1;
 
-            config.contentTypeGuids = _.uniq(config.contentTypes.map(function (x) {
-                return x.icContentTypeGuid;
-            }));
-
-            // Storing the 'pasteAllowed' check against a config property, so that it doesn't need to be re-eval'd every time
-            config.allowPaste = pasteAllowed();
-
             vm.inited = false;
             vm.markup = {};
             vm.prompts = {};
@@ -99,13 +92,11 @@
             vm.canAdd = canAdd;
             vm.canCopy = canCopy;
             vm.canDelete = canDelete;
-            vm.canPaste = canPaste;
 
             vm.addContent = addContent;
             vm.copyContent = copyContent;
             vm.deleteContent = deleteContent;
             vm.editContent = editContent;
-            vm.pasteContent = pasteContent;
 
             if ($scope.model.value.length > 0) {
 
@@ -168,13 +159,6 @@
             return config.copyEnabled && innerContentService.canCopyContent();
         };
 
-        function canPaste() {
-            if (config.copyEnabled && innerContentService.canPasteContent() && canAdd()) {
-                return config.allowPaste;
-            }
-            return false;
-        };
-
         function addContent(idx) {
             vm.overlayConfig.data = { model: null, idx: idx, action: "add" };
             vm.overlayConfig.show = true;
@@ -194,20 +178,9 @@
             var item = Object.assign({}, $scope.model.value[idx]);
             var success = innerContentService.setCopiedContent(item);
             if (success) {
-                config.allowPaste = true;
                 notificationsService.success("Content", "The content block has been copied.");
             } else {
                 notificationsService.error("Content", "Unfortunately, the content block was not able to be copied.");
-            }
-        };
-
-        function pasteContent(idx) {
-            var item = innerContentService.getCopiedContent();
-            if (item && contentTypeGuidIsAllowed(item.icContentTypeGuid)) {
-                vm.overlayConfig.callback({ model: item, idx: idx, action: "add" });
-                setDirty();
-            } else {
-                notificationsService.error("Content", "Unfortunately, the content block is not allowed to be pasted here.");
             }
         };
 
@@ -225,15 +198,6 @@
             if ($scope.propertyForm) {
                 $scope.propertyForm.$setDirty();
             }
-        };
-
-        function contentTypeGuidIsAllowed(guid) {
-            return !!guid && _.contains(config.contentTypeGuids, guid);
-        };
-
-        function pasteAllowed() {
-            var guid = innerContentService.getCopiedContentTypeGuid();
-            return guid && contentTypeGuidIsAllowed(guid);
         };
 
         init();
